@@ -4,6 +4,7 @@ import { connectDB } from "./config/dbConfig.js"
 
 // Local Imports
 import authRoutes from "./routes/authRoutes.js"
+import adminRoutes from "./routes/adminRoutes.js"
 import { errorHandler } from "./middleware/errorHandler.js"
 
 const app = express()
@@ -27,6 +28,10 @@ app.get("/", (req, res) => {
 
 // Auth Routes
 app.use("/api/auth", authRoutes)
+
+// Admin Routes
+app.use("/api/admin", adminRoutes)
+
 
 
 // Error Handler
