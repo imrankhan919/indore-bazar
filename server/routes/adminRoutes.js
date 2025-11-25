@@ -1,11 +1,22 @@
 import express from "express"
 import adminControllers from "../controllers/adminController.js"
-import adminProtect from "../middleware/adminMiddleware.js"
+import protect from "../middleware/authMiddleware.js"
 
 const router = express.Router()
 
+// Get Users
+router.get("/users", protect.forAdmin, adminControllers.getUsers)
 
-router.get("/users", adminProtect, adminControllers.getUsers)
+// Update User
+router.put("/users/:uid", protect.forAdmin, adminControllers.updateUser)
 
+// Get All Orders
+router.get("/orders", protect.forAdmin, adminControllers.getAllOrders)
+
+// Create Shop
+router.post("/shops", protect.forAdmin, adminControllers.createShop)
+
+// Update Shop
+router.put("/shops/:sid", protect.forAdmin, adminControllers.updateShop)
 
 export default router
