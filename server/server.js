@@ -3,10 +3,13 @@ import colors from "colors"
 import { connectDB } from "./config/dbConfig.js"
 
 // Local Imports
+import { errorHandler } from "./middleware/errorHandler.js"
 import authRoutes from "./routes/authRoutes.js"
 import adminRoutes from "./routes/adminRoutes.js"
 import shopOwnerRoutes from "./routes/shopOwnerRoutes.js"
-import { errorHandler } from "./middleware/errorHandler.js"
+import productRoutes from "./routes/productRoutes.js"
+import cartRoutes from "./routes/cartRoutes.js"
+import orderRoutes from "./routes/orderRoutes.js"
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -35,6 +38,16 @@ app.use("/api/admin", adminRoutes)
 
 // Shop Owner Routse
 app.use("/api/shop-owner", shopOwnerRoutes)
+
+// Product Routes
+app.use("/api/products", productRoutes)
+
+// Cart Routes
+app.use("/api/cart", cartRoutes)
+
+// Order Routes
+app.use("/api/orders", orderRoutes)
+
 
 // Error Handler
 app.use(errorHandler)
