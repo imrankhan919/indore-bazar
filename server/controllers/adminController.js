@@ -1,3 +1,4 @@
+import Order from "../models/orderModel.js"
 import User from "../models/userModel.js"
 
 const getUsers = async (req, res) => {
@@ -12,11 +13,34 @@ const getUsers = async (req, res) => {
 }
 
 const getAllOrders = async (req, res) => {
-    res.send('All Orders Here')
+    const allOrders = await Order.find()
+
+    if (!allOrders) {
+        res.status(404)
+        throw new Error("Orders Not Found!")
+    }
+
+
+    res.status(200).json(allOrders)
+
 }
 
 const updateUser = async (req, res) => {
-    res.send("User Updated!")
+
+    if (!req.body.isActive) {
+        res.status(409)
+        throw new Error('Please Send Status Of User')
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(req.params.uid, { isActive: req.body.isActive }, { new: true })
+
+    if (!updatedUser) {
+        res.status(409)
+        throw new Error('UserNot Updated')
+    }
+
+    res.status(200).json(updatedUser)
+
 }
 
 const updateShop = async (req, res) => {

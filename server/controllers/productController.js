@@ -1,9 +1,26 @@
+import Product from "../models/productModel.js"
+
 const getProducts = async (req, res) => {
-    res.send("All Products")
+    const products = await Product.find()
+
+    if (!products) {
+        res.status(404)
+        throw new Error('Products Not Found!')
+    }
+
+    res.status(200).json(products)
+
 }
 
 const getProduct = async (req, res) => {
-    res.send("Single Product")
+    const product = await Product.findById(req.params.pid)
+
+    if (!product) {
+        res.status(404)
+        throw new Error('Product Not Found!')
+    }
+
+    res.status(200).json(product)
 }
 
 
