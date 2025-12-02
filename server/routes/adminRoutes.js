@@ -13,8 +13,11 @@ router.put("/users/:uid", protect.forAdmin, adminControllers.updateUser)
 // Get All Orders
 router.get("/orders", protect.forAdmin, adminControllers.getAllOrders)
 
+// Get All Shops
+router.get("/shops", protect.forAdmin, adminControllers.getAllShops)
+
 // Create Shop
-router.post("/shops", protect.forAdmin, adminControllers.createShop)
+router.post("/shops/:sid", protect.forAdmin, adminControllers.createShop)
 
 // Update Shop
 router.put("/shops/:sid", protect.forAdmin, adminControllers.updateShop)

@@ -1,4 +1,5 @@
 import Order from "../models/orderModel.js"
+import Shop from "../models/shopModel.js"
 import User from "../models/userModel.js"
 
 const getUsers = async (req, res) => {
@@ -43,17 +44,49 @@ const updateUser = async (req, res) => {
 
 }
 
+const getAllShops = async (req, res) => {
+
+    const shops = await Shop.find()
+
+    if (!shops) {
+        res.status(404)
+        throw new Error('Shops Not Found')
+    }
+
+
+    res.status(200).json(shops)
+
+}
+
+
 const updateShop = async (req, res) => {
     res.send("Shop Updated!")
 }
 
 const createShop = async (req, res) => {
-    res.send("Shop Created!")
+
+    if (!req.body.status) {
+        res.status(409)
+        throw new Error('Please Tell The Status!')
+    }
+
+    let shopId = req.params.sid
+
+    const updatedShop = await Shop.findByIdAndUpdate(shopId, req.body.status, { new: true })
+
+    if (!updatedShop) {
+        res.status(409)
+        throw new Error('Shop Cannot Be Activated!')
+    }
+
+    res.status(200).json(updatedShop)
+
+
 }
 
 
 
-const adminControllers = { getUsers, getAllOrders, updateShop, updateUser, createShop }
+const adminControllers = { getUsers, getAllOrders, updateShop, updateUser, createShop, getAllShops }
 
 
 export default adminControllers

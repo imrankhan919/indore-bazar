@@ -1,5 +1,28 @@
+import Shop from "../models/shopModel.js"
+
 const addShop = async (req, res) => {
-    res.send("Request For Shop Creation!")
+
+    const { name, description, address, shopPhone } = req.body
+    let user = req.user.id
+
+    if (!name || !description || !address || !shopPhone) {
+        res.status(409)
+        throw new Error('Please Fill All Details!')
+    }
+
+    const shop = await Shop.create({ name, description, address, shopPhone, user })
+
+    if (!shop) {
+        res.status(401)
+        throw new Error("Shop Not Created!")
+    }
+
+    res.status(201).json({
+        message: "Request Has Been Sent To Admin",
+        shop
+    })
+
+
 }
 
 const updateShop = async (req, res) => {
