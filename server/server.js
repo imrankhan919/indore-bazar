@@ -10,6 +10,7 @@ import shopOwnerRoutes from "./routes/shopOwnerRoutes.js"
 import productRoutes from "./routes/productRoutes.js"
 import cartRoutes from "./routes/cartRoutes.js"
 import orderRoutes from "./routes/orderRoutes.js"
+import shopRoute from "./routes/shopRoutes.js"
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -48,6 +49,8 @@ app.use("/api/cart", cartRoutes)
 // Order Routes
 app.use("/api/orders", orderRoutes)
 
+// Shop Routes
+app.use("/api/shops", shopRoute)
 
 // Error Handler
 app.use(errorHandler)

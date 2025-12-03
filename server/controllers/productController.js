@@ -1,7 +1,7 @@
 import Product from "../models/productModel.js"
 
 const getProducts = async (req, res) => {
-    const products = await Product.find()
+    const products = await Product.find().populate('shop')
 
     if (!products) {
         res.status(404)
@@ -13,7 +13,7 @@ const getProducts = async (req, res) => {
 }
 
 const getProduct = async (req, res) => {
-    const product = await Product.findById(req.params.pid)
+    const product = await Product.findById(req.params.pid).populate("shop")
 
     if (!product) {
         res.status(404)

@@ -60,10 +60,6 @@ const getAllShops = async (req, res) => {
 
 
 const updateShop = async (req, res) => {
-    res.send("Shop Updated!")
-}
-
-const createShop = async (req, res) => {
 
     if (!req.body.status) {
         res.status(409)
@@ -72,7 +68,7 @@ const createShop = async (req, res) => {
 
     let shopId = req.params.sid
 
-    const updatedShop = await Shop.findByIdAndUpdate(shopId, req.body.status, { new: true })
+    const updatedShop = await Shop.findByIdAndUpdate(shopId, req.body, { new: true })
 
     if (!updatedShop) {
         res.status(409)
@@ -86,7 +82,7 @@ const createShop = async (req, res) => {
 
 
 
-const adminControllers = { getUsers, getAllOrders, updateShop, updateUser, createShop, getAllShops }
+const adminControllers = { getUsers, getAllOrders, updateShop, updateUser, getAllShops }
 
 
 export default adminControllers

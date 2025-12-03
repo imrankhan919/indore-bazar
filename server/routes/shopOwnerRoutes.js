@@ -1,6 +1,7 @@
 import express from "express"
 import shopOwnerController from "../controllers/shopOwnerControllers.js"
 import protect from "../middleware/authMiddleware.js"
+import upload from "../middleware/fileUploadMiddleware.js"
 
 
 const router = express.Router()
@@ -10,7 +11,7 @@ const router = express.Router()
 router.post("/create-shop", protect.forAuthUsers, shopOwnerController.addShop)
 
 // Add Product
-router.post("/add-product", protect.forAuthUsers, shopOwnerController.addProduct)
+router.post("/add-product", protect.forAuthUsers, upload.single('productImage'), shopOwnerController.addProduct)
 
 // Update Order
 router.put("/order/:oid", protect.forAuthUsers, shopOwnerController.updateOrder)

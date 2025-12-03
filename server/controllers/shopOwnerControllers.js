@@ -1,3 +1,4 @@
+import Product from "../models/productModel.js"
 import Shop from "../models/shopModel.js"
 
 const addShop = async (req, res) => {
@@ -31,12 +32,44 @@ const updateShop = async (req, res) => {
 
 
 const addProduct = async (req, res) => {
-    res.send("Product Added!")
+
+    const { name, description, price, stock, category, shopId } = req.body
+
+    if (!name || !description || !price || !stock || !category) {
+        res.status(409)
+        throw new Error("Please Fill All Details!")
+    }
+
+    const product = new Product({
+        name, description, price, stock, category, productImage: req.file.path, shop: shopId
+    })
+
+    await product.save()
+
+    await product.populate("shop")
+
+    if (!product) {
+        res.status(409)
+        throw new Error('Product Not Created!')
+    }
+
+
+    res.status(201).json(product)
 }
 
 
 const updateProduct = async (req, res) => {
-    res.send("Product Updated!")
+
+    const updatedProduct = await Product.findByIdAndUpdate(req.params.pid, req.body, { new: true }).populate('shop')
+
+    if (!updatedProduct) {
+        res.status(409)
+        throw new Error('Product Not Updated!')
+    }
+
+    res.status(200).json(updatedProduct)
+
+
 }
 
 
