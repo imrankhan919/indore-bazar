@@ -20,6 +20,15 @@ const orderSchema = new mongoose.Schema({
         type: String,
         enum: ["pending", "delivered", "dispatched", "cancelled"],
         required: true
+    },
+    isDiscounted: {
+        type: Boolean,
+        required: true,
+        default: false
+    },
+    coupon: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Coupon",
     }
 }, {
     timestamps: true

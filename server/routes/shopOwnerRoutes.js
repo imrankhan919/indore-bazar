@@ -22,5 +22,7 @@ router.put("/product/:pid", protect.forAuthUsers, shopOwnerController.updateProd
 // Update Shop
 router.put("/shop/:sid", protect.forAuthUsers, shopOwnerController.updateShop)
 
+// Create Coupon
+router.post("/coupon", protect.forAuthUsers, shopOwnerController.createCoupon)
 
 export default router

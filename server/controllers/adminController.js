@@ -75,10 +75,15 @@ const updateShop = async (req, res) => {
         throw new Error('Shop Cannot Be Activated!')
     }
 
+    // Update The User
+    await User.findByIdAndUpdate(updatedShop.user, { isShopOwner: true }, { new: true })
+
     res.status(200).json(updatedShop)
 
 
 }
+
+
 
 
 
