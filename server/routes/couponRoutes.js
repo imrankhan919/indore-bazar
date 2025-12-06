@@ -7,6 +7,7 @@ const router = express.Router()
 
 // get coupons
 router.get("/:sid", couponController.getCoupons)
+router.post("/apply", couponController.applyCoupon)
 
 
 

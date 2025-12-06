@@ -1,3 +1,7 @@
+import Cart from "../models/cartModel.js"
+import Coupon from "../models/couponModel.js"
+import Order from "../models/orderModel.js"
+
 const getMyOrders = async (req, res) => {
     res.send("My All Orders here...")
 }
@@ -7,10 +11,72 @@ const getMyOrder = async (req, res) => {
 }
 
 const createOrder = async (req, res) => {
-    res.send("My Order Creatd...")
+
+    const userId = req.user._id
+
+    let couponExists
+
+    if (req.body.couponCode) {
+        // Find Coupon
+        couponExists = await Coupon.findOne({ couponCode: req.body.couponCode })
+
+        if (!couponExists) {
+            res.status(404)
+            throw new Error("Invalid Coupon")
+        }
+
+    }
+
+
+    // Find Cart
+    const cart = await Cart.findOne({ user: userId })
+
+    await cart.populate("products.product")
+
+    if (!cart) {
+        res.status(404)
+        throw new Error("Cart Not Found!")
+    }
+
+    let totalBill = cart.products.reduce((acc, item) => {
+        return acc + item.product.price * item.qty
+    }, 0)
+
+    let discount = couponExists ? totalBill * couponExists.couponDiscount / 100 : 0
+
+    let shop = cart.products[0].product.shop
+
+    const order = new Order({
+        user: userId,
+        cart: cart,
+        shop: shop,
+        status: "placed",
+        isDiscounted: couponExists ? true : false,
+        coupon: couponExists ? couponExists._id : null,
+        totalBillAmount: totalBill - discount
+    })
+
+    await order.save()
+
+    if (!order) {
+        res.status(409)
+        throw new Error("Order Not Placed")
+    }
+    res.status(201).json(order)
+
 }
 const cancelOrder = async (req, res) => {
-    res.send("My Order Cancelled...")
+
+    const order = await Order.findById(req.params.oid)
+
+    if (order.status === "placed") {
+        const cancelledOrder = await Order.findByIdAndUpdate(req.params.oid, { status: "cancelled" }, { new: true })
+        res.status(200).json(cancelledOrder)
+    } else {
+        res.status(409)
+        throw new Error("Order Cannot Be Cancelled! After Dispatched")
+    }
+
 }
 
 

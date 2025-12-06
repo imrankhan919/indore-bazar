@@ -52,9 +52,6 @@ const addToCart = async (req, res) => {
             return item.product.toString() === productId
         })
 
-        console.log(productIndex)
-
-
         if (productIndex > -1) {
             // Update Quantity if product exists
             cart.products[productIndex].qty += parseInt(qty)

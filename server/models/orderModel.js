@@ -18,7 +18,7 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ["pending", "delivered", "dispatched", "cancelled"],
+        enum: ["placed", "delivered", "dispatched", "cancelled"],
         required: true
     },
     isDiscounted: {
@@ -29,6 +29,9 @@ const orderSchema = new mongoose.Schema({
     coupon: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Coupon",
+    }, totalBillAmount: {
+        type: Number,
+        required: true
     }
 }, {
     timestamps: true
