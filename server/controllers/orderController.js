@@ -3,11 +3,32 @@ import Coupon from "../models/couponModel.js"
 import Order from "../models/orderModel.js"
 
 const getMyOrders = async (req, res) => {
-    res.send("My All Orders here...")
+
+    const userId = req.user._id
+
+    const myOrders = await Order.find({ user: userId })
+
+    if (!myOrders) {
+        res.status(404)
+        throw new Error("Orders Not Found!")
+    }
+
+    res.status(200).json(myOrders)
+
+
+
 }
 
 const getMyOrder = async (req, res) => {
-    res.send("My Order here...")
+    const myOrder = await Order.findById(req.params.oid).populate("user").populate("shop").populate("cart").populate("coupon")
+
+    if (!myOrder) {
+        res.status(404)
+        throw new Error("Order Not Found!")
+    }
+
+    res.status(200).json(myOrder)
+
 }
 
 const createOrder = async (req, res) => {

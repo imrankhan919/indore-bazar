@@ -13,6 +13,9 @@ router.post("/create-shop", protect.forAuthUsers, shopOwnerController.addShop)
 // Add Product
 router.post("/add-product", protect.forAuthUsers, upload.single('productImage'), shopOwnerController.addProduct)
 
+// Shop Orders
+router.get("/order/", protect.forAuthUsers, shopOwnerController.getMyShopOrders)
+
 // Update Order
 router.put("/order/:oid", protect.forAuthUsers, shopOwnerController.updateOrder)
 

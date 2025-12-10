@@ -1,4 +1,5 @@
 import Coupon from "../models/couponModel.js"
+import Order from "../models/orderModel.js"
 import Product from "../models/productModel.js"
 import Shop from "../models/shopModel.js"
 
@@ -109,14 +110,52 @@ const createCoupon = async (req, res) => {
 
 }
 
+const getMyShopOrders = async (req, res) => {
+
+    let userId = req.user._id
+
+    let shop = await Shop.findOne({ user: userId })
+
+    if (!shop) {
+        res.status(404)
+        throw new Error("Shop Not Found")
+    }
+
+    let myAllOrders = await Order.find({ shop: shop._id }).populate("user").populate("cart").populate("coupon")
+
+    if (!myAllOrders) {
+        res.status(404)
+        throw new Error("Orders Not Found!")
+    }
+
+    res.status(200).json(myAllOrders)
+
+}
 
 
 
 const updateOrder = async (req, res) => {
-    res.send("Update Order")
+
+    let { status } = req.body
+
+    if (!status) {
+        res.status(409)
+        throw new Error("Status Not Founs!")
+    }
+
+    const updatedOrder = await Order.findByIdAndUpdate(req.params.oid, { status: status }, { new: true }).populate("user").populate("cart").populate("coupon").populate("shop")
+
+    if (!updatedOrder) {
+        res.status(401)
+        throw new Error("Order Not Updated")
+    }
+
+    res.status(200).json(updatedOrder)
+
+
 }
 
 
-const shopOwnerController = { addProduct, addShop, updateOrder, updateProduct, updateShop, createCoupon }
+const shopOwnerController = { addProduct, addShop, updateOrder, updateProduct, updateShop, createCoupon, getMyShopOrders }
 
 export default shopOwnerController
