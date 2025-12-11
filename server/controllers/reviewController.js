@@ -1,3 +1,4 @@
+import Order from "../models/orderModel.js"
 import Review from "../models/reviewModel.js"
 
 const getReviews = async (req, res) => {
@@ -18,7 +19,34 @@ const getReviews = async (req, res) => {
 
 
 const addReview = async (req, res) => {
-    res.send("Add Review")
+
+    const productId = req.pid
+    const userId = req.user._id
+
+    const { rating, text } = req.body
+
+    if (!rating || !text) {
+        res.status(409)
+        throw new Error("Please Fill All Details!")
+    }
+
+    // Find If this product is in users order history
+
+    let orderHistory = await Order.find({ user: userId })
+
+    console.log(orderHistory)
+
+
+    //   const review = await Review.create({
+    //     user : userId,
+    //     product : productId,
+    //     rating : rating,
+    //     text : text,
+    //     isVerifiedBuyer : false
+    //   })
+
+    res.send("review Added")
+
 }
 
 const removeReview = async (req, res) => {

@@ -1,3 +1,5 @@
+import fs from "node:fs"
+import uploadToCloudinary from "../middleware/cloudinaryMiddleware.js"
 import Coupon from "../models/couponModel.js"
 import Order from "../models/orderModel.js"
 import Product from "../models/productModel.js"
@@ -42,8 +44,16 @@ const addProduct = async (req, res) => {
         throw new Error("Please Fill All Details!")
     }
 
+    // Upload File To Cloudinary
+    let uploadResponse = await uploadToCloudinary(req.file.path)
+
+    // Remove File From Server
+    fs.unlinkSync(req.file.path)
+
+
+
     const product = new Product({
-        name, description, price, stock, category, productImage: req.file.path, shop: shopId
+        name, description, price, stock, category, productImage: uploadResponse.secure_url, shop: shopId
     })
 
     await product.save()

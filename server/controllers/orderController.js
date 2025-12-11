@@ -83,6 +83,10 @@ const createOrder = async (req, res) => {
         res.status(409)
         throw new Error("Order Not Placed")
     }
+
+    // Clear Cart
+    await cart.deleteOne({ user: userId })
+
     res.status(201).json(order)
 
 }
