@@ -20,7 +20,7 @@ const getMyOrders = async (req, res) => {
 }
 
 const getMyOrder = async (req, res) => {
-    const myOrder = await Order.findById(req.params.oid).populate("user").populate("shop").populate("cart").populate("coupon")
+    const myOrder = await Order.findById(req.params.oid).populate("user").populate("shop").populate("products").populate("coupon")
 
     if (!myOrder) {
         res.status(404)
@@ -51,13 +51,22 @@ const createOrder = async (req, res) => {
 
     // Find Cart
     const cart = await Cart.findOne({ user: userId })
-
     await cart.populate("products.product")
 
     if (!cart) {
         res.status(404)
         throw new Error("Cart Not Found!")
     }
+
+    let billedProducts = cart.products.map((product) => {
+        return {
+            product: product.product._id,
+            qty: product.qty,
+            purchasedPrice: product.product.price
+        }
+    })
+
+
 
     let totalBill = cart.products.reduce((acc, item) => {
         return acc + item.product.price * item.qty
@@ -69,7 +78,7 @@ const createOrder = async (req, res) => {
 
     const order = new Order({
         user: userId,
-        cart: cart,
+        products: billedProducts,
         shop: shop,
         status: "placed",
         isDiscounted: couponExists ? true : false,
@@ -77,6 +86,7 @@ const createOrder = async (req, res) => {
         totalBillAmount: totalBill - discount
     })
 
+    await order.populate("products.product")
     await order.save()
 
     if (!order) {
@@ -90,6 +100,8 @@ const createOrder = async (req, res) => {
     res.status(201).json(order)
 
 }
+
+
 const cancelOrder = async (req, res) => {
 
     const order = await Order.findById(req.params.oid)

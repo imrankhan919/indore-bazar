@@ -146,6 +146,12 @@ const getMyShopOrders = async (req, res) => {
 
 const updateOrder = async (req, res) => {
 
+    let orderId = req.params.oid
+
+    let order = await Order.findById(orderId).populate("products.product")
+
+
+
     let { status } = req.body
 
     if (!status) {
@@ -153,7 +159,36 @@ const updateOrder = async (req, res) => {
         throw new Error("Status Not Founs!")
     }
 
-    const updatedOrder = await Order.findByIdAndUpdate(req.params.oid, { status: status }, { new: true }).populate("user").populate("cart").populate("coupon").populate("shop")
+    // ["placed", "delivered", "dispatched", "cancelled"]
+
+    const updateStock = async (productId, stock) => {
+        await Product.findByIdAndUpdate(productId, { stock: stock }, { new: true })
+    }
+
+
+    let updatedOrder
+
+    // If Cancelled
+    if (status === "cancelled") {
+        updatedOrder = await Order.findByIdAndUpdate(req.params.oid, { status: "cancelled" }, { new: true }).populate("user").populate("products").populate("coupon").populate("shop")
+
+        // If Dispatched
+    } else if (status === "dispatched") {
+
+        // Updating Stock
+        order.products.forEach((product) => {
+            let productId = product.product._id
+            let productQty = product.qty
+            let currentStock = product.product.stock
+            updateStock(productId, currentStock - productQty)
+        })
+
+        updatedOrder = await Order.findByIdAndUpdate(req.params.oid, { status: "dispatched" }, { new: true }).populate("user").populate("products").populate("coupon").populate("shop")
+    } else {
+        updatedOrder = await Order.findByIdAndUpdate(req.params.oid, { status: "delivered" }, { new: true }).populate("user").populate("products").populate("coupon").populate("shop")
+    }
+
+
 
     if (!updatedOrder) {
         res.status(401)
