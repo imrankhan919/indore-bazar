@@ -12,6 +12,7 @@ import cartRoutes from "./routes/cartRoutes.js"
 import orderRoutes from "./routes/orderRoutes.js"
 import shopRoutes from "./routes/shopRoutes.js"
 import couponRoutes from "./routes/couponRoutes.js"
+import chatBotRoutes from "./routes/chatBotRoutes.js"
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -56,6 +57,8 @@ app.use("/api/shops", shopRoutes)
 // Coupon Routes
 app.use("/api/coupons", couponRoutes)
 
+// Chat Bot Routes
+app.use("/api/chat", chatBotRoutes)
 
 // Error Handler
 app.use(errorHandler)
