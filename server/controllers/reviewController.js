@@ -34,23 +34,42 @@ const addReview = async (req, res) => {
 
     let orderHistory = await Order.find({ user: userId })
 
-    console.log(orderHistory)
+    let purchasedBefore
 
 
-    //   const review = await Review.create({
-    //     user : userId,
-    //     product : productId,
-    //     rating : rating,
-    //     text : text,
-    //     isVerifiedBuyer : false
-    //   })
+    orderHistory.forEach((orders) => {
+        orders.products.forEach((order) => {
+            if (order.product.toString() === productId) {
+                purchasedBefore = true
+                return
+            }
+        })
+    })
 
-    res.send("review Added")
+    const review = await Review.create({
+        user: userId,
+        product: productId,
+        rating: rating,
+        text: text,
+        isVerifiedBuyer: purchasedBefore || false
+    })
+
+    res.status(201).json(review)
 
 }
 
 const removeReview = async (req, res) => {
-    res.send("Review Removed!")
+    const reviewId = req.params.rid
+
+    await Review.findByIdAndDelete(reviewId)
+
+    res.status(200)
+        .json({
+            message: "Review Removed",
+            _id: reviewId
+        })
+
+
 }
 
 
