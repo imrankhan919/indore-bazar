@@ -14,7 +14,7 @@ const getUsers = async (req, res) => {
 }
 
 const getAllOrders = async (req, res) => {
-    const allOrders = await Order.find().populate("user").populate("cart").populate("coupon").populate('shop')
+    const allOrders = await Order.find().populate("user").populate("products.product").populate("coupon").populate('shop')
 
 
     if (!allOrders) {
