@@ -4,6 +4,8 @@ import AdminSidebar from "../../components/admin/AdminSidebar";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllOrders, getAllShops, getAllUsers } from "../../features/admin/adminSlice";
+import ShopApprovalListGroup from "../../components/admin/ShopApprovalListGroup";
+import { toast } from "react-toastify";
 
 function AdminDashboard() {
 
@@ -23,7 +25,13 @@ function AdminDashboard() {
         if (!user.isAdmin || !user) {
             navigate("/login")
         }
-    }, [user])
+
+        if (adminError && adminErrorMessage) {
+            toast.error(adminErrorMessage, { position: "top-center" })
+        }
+
+
+    }, [user, adminError, adminErrorMessage])
 
     if (adminLoading) {
         return (
@@ -123,91 +131,7 @@ function AdminDashboard() {
 
                                 </div>
                             </div>
-
-                            <div className="bg-white rounded-lg border border-slate-200 p-6">
-                                <h3 className="text-lg font-bold text-slate-800 mb-4">Pending Shop Approvals</h3>
-                                <div className="space-y-4">
-                                    <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                                        <div>
-                                            <p className="text-sm font-medium text-slate-800">Sunrise Grocery Store</p>
-                                            <p className="text-xs text-slate-500">Owner: Alex Martinez</p>
-                                            <p className="text-xs text-slate-500 mt-1">Location: Downtown, NY</p>
-                                        </div>
-                                        <div className="flex flex-col gap-2">
-                                            <button className="px-3 py-1 bg-emerald-600 text-white text-xs font-medium rounded hover:bg-emerald-700">
-                                                Approve
-                                            </button>
-                                            <button className="px-3 py-1 bg-slate-200 text-slate-700 text-xs font-medium rounded hover:bg-slate-300">
-                                                Reject
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                                        <div>
-                                            <p className="text-sm font-medium text-slate-800">Fresh Foods Market</p>
-                                            <p className="text-xs text-slate-500">Owner: Lisa Chen</p>
-                                            <p className="text-xs text-slate-500 mt-1">Location: Brooklyn, NY</p>
-                                        </div>
-                                        <div className="flex flex-col gap-2">
-                                            <button className="px-3 py-1 bg-emerald-600 text-white text-xs font-medium rounded hover:bg-emerald-700">
-                                                Approve
-                                            </button>
-                                            <button className="px-3 py-1 bg-slate-200 text-slate-700 text-xs font-medium rounded hover:bg-slate-300">
-                                                Reject
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                                        <div>
-                                            <p className="text-sm font-medium text-slate-800">Organic Paradise</p>
-                                            <p className="text-xs text-slate-500">Owner: Tom Anderson</p>
-                                            <p className="text-xs text-slate-500 mt-1">Location: Queens, NY</p>
-                                        </div>
-                                        <div className="flex flex-col gap-2">
-                                            <button className="px-3 py-1 bg-emerald-600 text-white text-xs font-medium rounded hover:bg-emerald-700">
-                                                Approve
-                                            </button>
-                                            <button className="px-3 py-1 bg-slate-200 text-slate-700 text-xs font-medium rounded hover:bg-slate-300">
-                                                Reject
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                                        <div>
-                                            <p className="text-sm font-medium text-slate-800">Corner Store Express</p>
-                                            <p className="text-xs text-slate-500">Owner: Rachel Green</p>
-                                            <p className="text-xs text-slate-500 mt-1">Location: Manhattan, NY</p>
-                                        </div>
-                                        <div className="flex flex-col gap-2">
-                                            <button className="px-3 py-1 bg-emerald-600 text-white text-xs font-medium rounded hover:bg-emerald-700">
-                                                Approve
-                                            </button>
-                                            <button className="px-3 py-1 bg-slate-200 text-slate-700 text-xs font-medium rounded hover:bg-slate-300">
-                                                Reject
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center justify-between">
-                                        <div>
-                                            <p className="text-sm font-medium text-slate-800">Healthy Harvest Market</p>
-                                            <p className="text-xs text-slate-500">Owner: Kevin Park</p>
-                                            <p className="text-xs text-slate-500 mt-1">Location: Bronx, NY</p>
-                                        </div>
-                                        <div className="flex flex-col gap-2">
-                                            <button className="px-3 py-1 bg-emerald-600 text-white text-xs font-medium rounded hover:bg-emerald-700">
-                                                Approve
-                                            </button>
-                                            <button className="px-3 py-1 bg-slate-200 text-slate-700 text-xs font-medium rounded hover:bg-slate-300">
-                                                Reject
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <ShopApprovalListGroup allShops={allShops} />
                         </div>
                     </div>
                 </main>

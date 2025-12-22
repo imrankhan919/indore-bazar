@@ -46,7 +46,7 @@ const updateUser = async (req, res) => {
 
 const getAllShops = async (req, res) => {
 
-    const shops = await Shop.find()
+    const shops = await Shop.find().populate("user")
 
     if (!shops) {
         res.status(404)
