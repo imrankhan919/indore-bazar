@@ -22,7 +22,7 @@ function AdminDashboard() {
         dispatch(getAllOrders())
         dispatch(getAllShops())
 
-        if (!user.isAdmin || !user) {
+        if (!user?.isAdmin || !user) {
             navigate("/login")
         }
 
@@ -99,7 +99,7 @@ function AdminDashboard() {
                                     <span className="text-xs font-medium text-rose-600 bg-rose-50 px-2 py-1 rounded">Urgent</span>
                                 </div>
                                 <p className="text-slate-500 text-sm mb-1">Pending Approvals</p>
-                                <p className="text-3xl font-bold text-slate-800">12</p>
+                                <p className="text-3xl font-bold text-slate-800">{allShops.filter(shop => shop.status !== "accepted").length}</p>
                             </div>
                         </div>
 

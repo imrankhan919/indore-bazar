@@ -9,6 +9,7 @@ import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminAllUsers from './pages/admin/AdminAllUsers'
 import AdminAllOrders from './pages/admin/AdminAllOrders'
 import AdminAllShops from './pages/admin/AdminAllShops'
+import PrivateComponent from './components/PrivateComponent'
 
 const App = () => {
   return (
@@ -18,10 +19,12 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/users" element={<AdminAllUsers />} />
-        <Route path="/admin/orders" element={<AdminAllOrders />} />
-        <Route path="/admin/shops" element={<AdminAllShops />} />
+        <Route path='/admin' element={<PrivateComponent />} >
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="users" element={<AdminAllUsers />} />
+          <Route path="orders" element={<AdminAllOrders />} />
+          <Route path="shops" element={<AdminAllShops />} />
+        </Route>
       </Routes>
       <ToastContainer />
     </BrowserRouter>

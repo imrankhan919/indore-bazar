@@ -74,6 +74,44 @@ const adminSlice = createSlice({
                 state.adminError = true
                 state.adminErrorMessage = action.payload
             })
+            .addCase(shopUpdate.pending, (state, action) => {
+                state.adminLoading = true
+                state.adminSuccess = false
+                state.adminError = false
+                state.adminErrorMessage = ""
+            })
+            .addCase(shopUpdate.fulfilled, (state, action) => {
+                state.adminLoading = false
+                state.adminSuccess = true
+                state.allShops = state.allShops.map(shop => shop._id === action.payload._id ? action.payload : shop)
+                state.adminError = false
+                state.adminErrorMessage = ""
+            })
+            .addCase(shopUpdate.rejected, (state, action) => {
+                state.adminLoading = false
+                state.adminSuccess = false
+                state.adminError = true
+                state.adminErrorMessage = action.payload
+            })
+            .addCase(userUpdate.pending, (state, action) => {
+                state.adminLoading = true
+                state.adminSuccess = false
+                state.adminError = false
+                state.adminErrorMessage = ""
+            })
+            .addCase(userUpdate.fulfilled, (state, action) => {
+                state.adminLoading = false
+                state.adminSuccess = true
+                state.allUsers = state.allUsers.map(user => user._id === action.payload._id ? action.payload : user)
+                state.adminError = false
+                state.adminErrorMessage = ""
+            })
+            .addCase(userUpdate.rejected, (state, action) => {
+                state.adminLoading = false
+                state.adminSuccess = false
+                state.adminError = true
+                state.adminErrorMessage = action.payload
+            })
     }
 });
 
@@ -109,6 +147,29 @@ export const getAllShops = createAsyncThunk("FETCH/ADMIN/SHOPS", async (_, thunk
     let token = thunkAPI.getState().auth.user.token
     try {
         return await adminService.fetchAllshops(token)
+    } catch (error) {
+        const message = error.response.data.message
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+
+// Update Shop
+export const shopUpdate = createAsyncThunk("UDPATE/ADMIN/SHOPS", async (shopDetails, thunkAPI) => {
+    let token = thunkAPI.getState().auth.user.token
+    try {
+        return await adminService.updateShop(shopDetails, token)
+    } catch (error) {
+        const message = error.response.data.message
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+// Update User
+export const userUpdate = createAsyncThunk("UDPATE/ADMIN/USER", async (userDetails, thunkAPI) => {
+    let token = thunkAPI.getState().auth.user.token
+    try {
+        return await adminService.updateUser(userDetails, token)
     } catch (error) {
         const message = error.response.data.message
         return thunkAPI.rejectWithValue(message)

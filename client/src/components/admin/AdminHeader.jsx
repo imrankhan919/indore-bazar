@@ -1,6 +1,20 @@
 import React from 'react'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
+import { logoutUser } from '../../features/auth/authSlice'
 
 const AdminHeader = () => {
+
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+
+
+    const handleLogout = () => {
+        dispatch(logoutUser())
+        navigate("/")
+    }
+
+
     return (
         <header className="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
             <div className="flex items-center gap-4">
@@ -28,9 +42,10 @@ const AdminHeader = () => {
                     <div className="w-10 h-10 rounded-full bg-emerald-600 flex items-center justify-center text-white font-medium">
                         AU
                     </div>
+                    <button onClick={handleLogout} className="px-4 py-2 bg-red-500 text-white text-sm font-medium rounded-lg hover:bg-red-600 transition-colors">Logout</button>
                 </div>
             </div>
-        </header>
+        </header >
     )
 }
 

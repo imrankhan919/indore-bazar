@@ -2,8 +2,9 @@ import { useDispatch, useSelector } from "react-redux";
 import AdminHeader from "../../components/admin/AdminHeader";
 import AdminSidebar from "../../components/admin/AdminSidebar";
 import { useNavigate } from "react-router-dom";
-import { getAllUsers } from "../../features/admin/adminSlice";
+import { getAllUsers, userUpdate } from "../../features/admin/adminSlice";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 function AdminAllUsers() {
 
@@ -12,6 +13,12 @@ function AdminAllUsers() {
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
+
+    const handleUpdateUser = (userDetails) => {
+        dispatch(userUpdate(userDetails))
+    }
+
+
 
     useEffect(() => {
 
@@ -93,9 +100,9 @@ function AdminAllUsers() {
                                                     <div className="flex gap-2">
                                                         {
                                                             user.isActive ? (
-                                                                <button className="text-red-600 hover:text-red-800 font-medium">Deactivate</button>
+                                                                <button onClick={() => handleUpdateUser({ userId: user._id, isActive: false })} className="text-red-600 hover:text-red-800 font-medium">Deactivate</button>
                                                             ) : (
-                                                                <button className="text-emerald-600 hover:text-emerald-800 font-medium">Activate</button>
+                                                                <button onClick={() => handleUpdateUser({ userId: user._id, isActive: true })} className="text-emerald-600 hover:text-emerald-800 font-medium">Activate</button>
                                                             )
                                                         }
                                                     </div>

@@ -28,12 +28,13 @@ const getAllOrders = async (req, res) => {
 
 const updateUser = async (req, res) => {
 
-    if (!req.body.isActive) {
-        res.status(409)
-        throw new Error('Please Send Status Of User')
-    }
 
-    const updatedUser = await User.findByIdAndUpdate(req.params.uid, { isActive: req.body.isActive }, { new: true })
+    // if (!req.body.isActive) {
+    //     res.status(409)
+    //     throw new Error('Please Send Status Of User')
+    // }
+
+    const updatedUser = await User.findByIdAndUpdate(req.params.uid, { isActive: req.body.isActive ? true : false }, { new: true })
 
     if (!updatedUser) {
         res.status(409)

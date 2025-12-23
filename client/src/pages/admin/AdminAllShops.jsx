@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import AdminHeader from "../../components/admin/AdminHeader";
 import AdminSidebar from "../../components/admin/AdminSidebar";
-import { getAllShops } from "../../features/admin/adminSlice";
+import { getAllShops, shopUpdate } from "../../features/admin/adminSlice";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -13,6 +13,12 @@ function AdminAllShops() {
 
     const navigate = useNavigate()
     const dispatch = useDispatch()
+
+    const handleShopUpdate = (shopDetails) => {
+        dispatch(shopUpdate(shopDetails))
+    }
+
+
 
     useEffect(() => {
 
@@ -87,9 +93,7 @@ function AdminAllShops() {
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                                                     <div className="flex gap-2">
 
-                                                        {
-                                                            shop.status === "accepted" ? (<button className="text-red-600 hover:text-red-800 font-medium">Deactivate</button>) : (<button className="text-emerald-600 hover:text-emerald-800 font-medium">Activate</button>)
-                                                        }
+                                                        <button onClick={() => handleShopUpdate({ shopId: shop._id, status: shop.status === "accepted" ? "rejected" : "accepted" })} className={`cursor-pointer ${shop.status === "accepted" ? 'text-red-600 hover:text-red-800' : 'text-green-600 hover:text-green-800'}  font-medium`}>{shop.status === "accepted" ? "Disable" : "Activate"}</button>
 
                                                     </div>
                                                 </td>

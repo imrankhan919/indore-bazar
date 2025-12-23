@@ -39,6 +39,36 @@ const fetchAllshops = async (token) => {
 }
 
 
-const adminService = { fetchAllUsers, fetchAllOrders, fetchAllshops }
+const updateUser = async (userDetails, token) => {
+
+    console.log(userDetails)
+
+    let options = {
+        headers: {
+            authorization: `Bearer ${token}`
+        }
+    }
+
+    const response = await axios.put(`${API_URL}/users/${userDetails.userId}`, userDetails, options)
+    return response.data
+
+}
+
+const updateShop = async (shopDetails, token) => {
+
+    let options = {
+        headers: {
+            authorization: `Bearer ${token}`
+        }
+    }
+
+    const response = await axios.put(`${API_URL}/shops/${shopDetails.shopId}`, shopDetails, options)
+    return response.data
+
+}
+
+
+
+const adminService = { fetchAllUsers, fetchAllOrders, fetchAllshops, updateShop, updateUser }
 
 export default adminService
