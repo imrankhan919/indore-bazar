@@ -16,8 +16,10 @@ function AdminAllOrders() {
 
     useEffect(() => {
 
-        // Api Calls
-        dispatch(getAllOrders())
+        if (user?.isAdmin) {
+            // Api Calls
+            dispatch(getAllOrders())
+        }
 
         if (!user.isAdmin || !user) {
             navigate("/login")

@@ -22,8 +22,10 @@ function AdminAllShops() {
 
     useEffect(() => {
 
-        // Api Calls
-        dispatch(getAllShops())
+        if (user?.isAdmin) {
+            // Api Calls
+            dispatch(getAllShops())
+        }
 
         if (!user.isAdmin || !user) {
             navigate("/login")

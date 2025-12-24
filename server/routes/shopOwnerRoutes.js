@@ -6,6 +6,8 @@ import upload from "../middleware/fileUploadMiddleware.js"
 
 const router = express.Router()
 
+// Get Shop
+router.get("/", protect.forAuthUsers, shopOwnerController.getShop)
 
 // Create Shop
 router.post("/create-shop", protect.forAuthUsers, shopOwnerController.addShop)

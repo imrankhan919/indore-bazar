@@ -22,8 +22,10 @@ function AdminAllUsers() {
 
     useEffect(() => {
 
-        // Api Calls
-        dispatch(getAllUsers())
+        if (user?.isAdmin) {
+            // Api Calls
+            dispatch(getAllUsers())
+        }
 
         if (!user.isAdmin || !user) {
             navigate("/login")

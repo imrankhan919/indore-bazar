@@ -10,6 +10,12 @@ import AdminAllUsers from './pages/admin/AdminAllUsers'
 import AdminAllOrders from './pages/admin/AdminAllOrders'
 import AdminAllShops from './pages/admin/AdminAllShops'
 import PrivateComponent from './components/PrivateComponent'
+import PriveateAdminComponent from './components/PriveateAdminComponent'
+import ShopDashboard from './pages/shop/ShopDashBoard'
+import ShopOwnerProducts from './pages/shop/ShopOwnerProducts'
+import ShopOrders from './pages/shop/ShopOrders'
+import ShopCoupons from './pages/shop/ShopCoupons'
+import ShopProfile from './pages/shop/ShopProfile'
 
 const App = () => {
   return (
@@ -19,12 +25,19 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path='/admin' element={<PrivateComponent />} >
+        {/* Admin Routes */}
+        <Route path='/admin' element={<PriveateAdminComponent />} >
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="users" element={<AdminAllUsers />} />
           <Route path="orders" element={<AdminAllOrders />} />
           <Route path="shops" element={<AdminAllShops />} />
         </Route>
+        {/* Shop Owner Routes */}
+        <Route path='/shop/dashboard' element={<ShopDashboard />} />
+        <Route path='/shop/products' element={<ShopOwnerProducts />} />
+        <Route path='/shop/orders' element={<ShopOrders />} />
+        <Route path='/shop/coupons' element={<ShopCoupons />} />
+        <Route path='/shop/profile' element={<ShopProfile />} />
       </Routes>
       <ToastContainer />
     </BrowserRouter>

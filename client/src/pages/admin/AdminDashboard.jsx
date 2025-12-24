@@ -17,12 +17,14 @@ function AdminDashboard() {
 
     useEffect(() => {
 
-        // Api Calls
-        dispatch(getAllUsers())
-        dispatch(getAllOrders())
-        dispatch(getAllShops())
+        if (user?.isAdmin) {
+            // Api Calls
+            dispatch(getAllUsers())
+            dispatch(getAllOrders())
+            dispatch(getAllShops())
+        }
 
-        if (!user?.isAdmin || !user) {
+        if (!user?.isAdmin) {
             navigate("/login")
         }
 

@@ -5,6 +5,26 @@ import Order from "../models/orderModel.js"
 import Product from "../models/productModel.js"
 import Shop from "../models/shopModel.js"
 
+
+const getShop = async (req, res) => {
+
+    const userId = req.user._id
+
+    const shop = await Shop.findOne({ user: userId })
+
+    if (!shop) {
+        res.status(404)
+        throw new Error("Shop Not Found!")
+    }
+
+    res.status(200).json(shop)
+
+
+}
+
+
+
+
 const addShop = async (req, res) => {
 
     const { name, description, address, shopPhone } = req.body
@@ -31,7 +51,20 @@ const addShop = async (req, res) => {
 }
 
 const updateShop = async (req, res) => {
-    res.send("Update Shop!")
+    let shopId = req.params.sid
+
+    if (req.body.status) {
+        req.body.status = "pending"
+    }
+
+    const updatedShop = await Shop.findByIdAndUpdate(shopId, req.body, { new: true })
+
+    if (!updatedShop) {
+        res.status(409)
+        throw new Error("Shop Not Updated!")
+    }
+
+    res.status(200).json(updatedShop)
 }
 
 
@@ -197,10 +230,9 @@ const updateOrder = async (req, res) => {
 
     res.status(200).json(updatedOrder)
 
-
 }
 
 
-const shopOwnerController = { addProduct, addShop, updateOrder, updateProduct, updateShop, createCoupon, getMyShopOrders }
+const shopOwnerController = { addProduct, addShop, updateOrder, updateProduct, updateShop, createCoupon, getMyShopOrders, getShop }
 
 export default shopOwnerController
