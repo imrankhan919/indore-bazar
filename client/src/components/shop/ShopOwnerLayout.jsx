@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 function ShopOwnerLayout({ children, activePage = 'Dashboard' }) {
 
     const { user } = useSelector(state => state.auth)
+    const { shop } = useSelector(state => state.shop)
 
 
 
@@ -63,7 +64,7 @@ function ShopOwnerLayout({ children, activePage = 'Dashboard' }) {
                             <div className="flex items-center space-x-4">
                                 <div className="hidden md:flex items-center px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
                                     <Store className="w-4 h-4 text-emerald-600" />
-                                    <span className="ml-2 text-sm font-medium text-emerald-700">Fresh Mart Downtown</span>
+                                    <span className="ml-2 text-sm font-medium text-emerald-700">{shop.name}</span>
                                 </div>
 
                                 <button className="relative p-2 rounded-lg hover:bg-slate-100">

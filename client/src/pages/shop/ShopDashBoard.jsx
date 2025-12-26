@@ -1,7 +1,58 @@
-import { Package, ShoppingBag, DollarSign, Tag, TrendingUp, TrendingDown } from 'lucide-react';
+import { Package, ShoppingBag, DollarSign, Tag, TrendingUp, TrendingDown, IndianRupee } from 'lucide-react';
 import ShopOwnerLayout from '../../components/shop/ShopOwnerLayout';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import LoadingScreen from '../../components/LoadingScreen';
+import { getAllCoupons, getAllProducts, getMyShopDetails, getMyShopOrders } from '../../features/shop/shopSlice';
 
 function ShopDashboard() {
+
+
+    const { user } = useSelector(state => state.auth)
+    const { shop, shopLoading, shopSuccess, shopError, shopErrorMessage, shopProducts, shopOrders, shopCoupons } = useSelector(state => state.shop)
+
+    const dispatch = useDispatch()
+
+
+    // Revenue
+
+    const totalRevenue = shopOrders.reduce((acc, order) => acc + order.totalBillAmount, 0)
+
+
+
+
+    const fetchData = () => {
+
+        // Api Call
+        dispatch(getMyShopDetails())
+        setTimeout(() => {
+            dispatch(getAllProducts())
+            dispatch(getMyShopOrders())
+            dispatch(getAllCoupons())
+        }, 500)
+
+
+    }
+
+
+
+    useEffect(() => {
+
+        fetchData()
+
+        if (shopError && shopErrorMessage) {
+            toast.error(shopError, { position: "top-center" })
+        }
+
+    }, [shopError, shopErrorMessage])
+
+
+    if (shopLoading) {
+        return <LoadingScreen loadingMessage='Shop Profile Loading...' />
+    }
+
+
     return (
         <ShopOwnerLayout activePage="Dashboard">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
@@ -15,7 +66,7 @@ function ShopDashboard() {
                             <span>12%</span>
                         </div>
                     </div>
-                    <div className="text-3xl font-bold text-slate-900">247</div>
+                    <div className="text-3xl font-bold text-slate-900">{shopProducts.length}</div>
                     <div className="text-sm text-slate-500 mt-1">Total Products</div>
                 </div>
 
@@ -29,21 +80,21 @@ function ShopDashboard() {
                             <span>8%</span>
                         </div>
                     </div>
-                    <div className="text-3xl font-bold text-slate-900">1,429</div>
+                    <div className="text-3xl font-bold text-slate-900">{shopOrders.length}</div>
                     <div className="text-sm text-slate-500 mt-1">Total Orders</div>
                 </div>
 
                 <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
                     <div className="flex items-center justify-between mb-4">
                         <div className="p-3 bg-emerald-100 rounded-lg">
-                            <DollarSign className="w-6 h-6 text-emerald-600" />
+                            <IndianRupee className="w-6 h-6 text-emerald-600" />
                         </div>
                         <div className="flex items-center text-sm text-red-600">
                             <TrendingDown className="w-4 h-4 mr-1" />
                             <span>3%</span>
                         </div>
                     </div>
-                    <div className="text-3xl font-bold text-slate-900">$3,842</div>
+                    <div className="text-3xl font-bold text-slate-900">₹{totalRevenue}</div>
                     <div className="text-sm text-slate-500 mt-1">Today's Revenue</div>
                 </div>
 
@@ -57,7 +108,7 @@ function ShopDashboard() {
                             <span>5%</span>
                         </div>
                     </div>
-                    <div className="text-3xl font-bold text-slate-900">12</div>
+                    <div className="text-3xl font-bold text-slate-900">{shopCoupons.length}</div>
                     <div className="text-sm text-slate-500 mt-1">Active Coupons</div>
                 </div>
             </div>
@@ -66,70 +117,27 @@ function ShopDashboard() {
                 <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
                     <h3 className="text-lg font-semibold text-slate-900 mb-4">Recent Orders</h3>
                     <div className="space-y-4">
-                        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                            <div>
-                                <div className="font-medium text-slate-900">#ORD-24857</div>
-                                <div className="text-sm text-slate-500">Sarah Johnson</div>
-                            </div>
-                            <div className="text-right">
-                                <div className="font-semibold text-slate-900">$127.50</div>
-                                <div className="inline-block px-2 py-1 text-xs font-medium bg-amber-100 text-amber-700 rounded-full mt-1">
-                                    Preparing
-                                </div>
-                            </div>
-                        </div>
 
-                        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                            <div>
-                                <div className="font-medium text-slate-900">#ORD-24856</div>
-                                <div className="text-sm text-slate-500">Mike Williams</div>
-                            </div>
-                            <div className="text-right">
-                                <div className="font-semibold text-slate-900">$89.20</div>
-                                <div className="inline-block px-2 py-1 text-xs font-medium bg-sky-100 text-sky-700 rounded-full mt-1">
-                                    Out for Delivery
-                                </div>
-                            </div>
-                        </div>
+                        {
+                            shopOrders.map(order => {
+                                return (
+                                    <div key={order._id} className="flex items-center justify-between pb-4 border-b border-slate-100">
+                                        <div>
+                                            <div className="font-medium text-slate-900">#ORD-{order._id[0] + order._id[1] + order._id[2] + order._id[3]}</div>
+                                            <div className="text-sm text-slate-500">{order.user.name}</div>
+                                            <div className="text-sm text-slate-500">{order.user.email}</div>
+                                        </div>
+                                        <div className="text-right">
+                                            <div className="font-semibold text-slate-900">₹{order.totalBillAmount}</div>
+                                            <div className="inline-block px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 rounded-full mt-1">
+                                                {order.status}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
 
-                        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                            <div>
-                                <div className="font-medium text-slate-900">#ORD-24855</div>
-                                <div className="text-sm text-slate-500">Emma Davis</div>
-                            </div>
-                            <div className="text-right">
-                                <div className="font-semibold text-slate-900">$56.80</div>
-                                <div className="inline-block px-2 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full mt-1">
-                                    Delivered
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center justify-between pb-4 border-b border-slate-100">
-                            <div>
-                                <div className="font-medium text-slate-900">#ORD-24854</div>
-                                <div className="text-sm text-slate-500">James Brown</div>
-                            </div>
-                            <div className="text-right">
-                                <div className="font-semibold text-slate-900">$203.45</div>
-                                <div className="inline-block px-2 py-1 text-xs font-medium bg-slate-100 text-slate-700 rounded-full mt-1">
-                                    Placed
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                            <div>
-                                <div className="font-medium text-slate-900">#ORD-24853</div>
-                                <div className="text-sm text-slate-500">Lisa Anderson</div>
-                            </div>
-                            <div className="text-right">
-                                <div className="font-semibold text-slate-900">$142.90</div>
-                                <div className="inline-block px-2 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full mt-1">
-                                    Delivered
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 

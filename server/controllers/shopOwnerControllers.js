@@ -164,7 +164,7 @@ const getMyShopOrders = async (req, res) => {
         throw new Error("Shop Not Found")
     }
 
-    let myAllOrders = await Order.find({ shop: shop._id }).populate("user").populate("cart").populate("coupon")
+    let myAllOrders = await Order.find({ shop: shop._id }).populate("user").populate("products.product").populate("coupon")
 
     if (!myAllOrders) {
         res.status(404)
