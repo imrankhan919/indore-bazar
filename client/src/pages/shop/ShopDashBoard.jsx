@@ -25,12 +25,11 @@ function ShopDashboard() {
     const fetchData = () => {
 
         // Api Call
-        dispatch(getMyShopDetails())
-        setTimeout(() => {
-            dispatch(getAllProducts())
-            dispatch(getMyShopOrders())
-            dispatch(getAllCoupons())
-        }, 500)
+        // setTimeout(() => {
+        dispatch(getAllProducts())
+        dispatch(getMyShopOrders())
+        dispatch(getAllCoupons())
+        // }, 500)
 
 
     }
@@ -39,6 +38,7 @@ function ShopDashboard() {
 
     useEffect(() => {
 
+        dispatch(getMyShopDetails())
         fetchData()
 
         if (shopError && shopErrorMessage) {

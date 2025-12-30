@@ -1,7 +1,49 @@
 import { Plus, Search, Filter, Edit } from 'lucide-react';
 import ShopOwnerLayout from '../../components/shop/ShopOwnerLayout';
+import LoadingScreen from '../../components/LoadingScreen';
+import { toast } from 'react-toastify';
+import { getAllCoupons } from '../../features/shop/shopSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 function ShopCoupons() {
+
+
+
+
+    const { shopLoading, shopSuccess, shopError, shopErrorMessage, shopCoupons } = useSelector(state => state.shop)
+
+    const dispatch = useDispatch()
+
+
+
+
+
+
+    useEffect(() => {
+
+        dispatch(getAllCoupons())
+
+
+        if (shopError && shopErrorMessage) {
+            toast.error(shopError, { position: "top-center" })
+        }
+
+    }, [shopError, shopErrorMessage])
+
+
+    if (shopLoading) {
+        return <LoadingScreen loadingMessage='Shop Profile Loading...' />
+    }
+
+
+
+
+
+
+
+
+
     return (
         <ShopOwnerLayout activePage="Coupons">
             <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -36,245 +78,46 @@ function ShopCoupons() {
                             <tr className="bg-slate-50 border-b border-slate-200">
                                 <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Coupon Code</th>
                                 <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Discount</th>
-                                <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Min Order</th>
-                                <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Expiry Date</th>
-                                <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Uses</th>
+                                <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Created At</th>
                                 <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Status</th>
                                 <th className="px-6 py-4 text-left text-sm font-semibold text-slate-700">Action</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-200">
-                            <tr className="hover:bg-slate-50">
-                                <td className="px-6 py-4">
-                                    <div className="font-mono font-medium text-slate-900">FRESH20</div>
-                                    <div className="text-sm text-slate-500">New customer offer</div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm font-medium text-emerald-600">20% Off</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">$50.00</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">Dec 31, 2024</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">127 / 500</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
-                                        Active
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <button className="p-2 hover:bg-slate-100 rounded-lg">
-                                        <Edit className="w-5 h-5 text-slate-600" />
-                                    </button>
-                                </td>
-                            </tr>
 
-                            <tr className="hover:bg-slate-50">
-                                <td className="px-6 py-4">
-                                    <div className="font-mono font-medium text-slate-900">SAVE15</div>
-                                    <div className="text-sm text-slate-500">Weekend special</div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm font-medium text-emerald-600">15% Off</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">$30.00</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">Dec 15, 2024</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">89 / 200</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
-                                        Active
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <button className="p-2 hover:bg-slate-100 rounded-lg">
-                                        <Edit className="w-5 h-5 text-slate-600" />
-                                    </button>
-                                </td>
-                            </tr>
+                            {
+                                shopCoupons.map(coupon => {
+                                    return (
+                                        <tr key={coupon._id} className="hover:bg-slate-50">
+                                            <td className="px-6 py-4">
+                                                <div className="font-mono font-medium text-slate-900">{coupon.couponCode}</div>
+                                                <div className="text-sm text-slate-500">{coupon.shop}</div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className="text-sm font-medium text-emerald-600">{coupon.couponDiscount}% Off</span>
+                                            </td>
 
-                            <tr className="hover:bg-slate-50">
-                                <td className="px-6 py-4">
-                                    <div className="font-mono font-medium text-slate-900">FIRSTORDER</div>
-                                    <div className="text-sm text-slate-500">First time buyers</div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm font-medium text-emerald-600">$10 Off</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">$40.00</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">Jan 31, 2025</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">234 / 1000</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
-                                        Active
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <button className="p-2 hover:bg-slate-100 rounded-lg">
-                                        <Edit className="w-5 h-5 text-slate-600" />
-                                    </button>
-                                </td>
-                            </tr>
+                                            <td className="px-6 py-4">
+                                                <span className="text-sm text-slate-700">{new Date(coupon.createdAt).toLocaleDateString('en-IN')}</span>
+                                            </td>
 
-                            <tr className="hover:bg-slate-50">
-                                <td className="px-6 py-4">
-                                    <div className="font-mono font-medium text-slate-900">BULK25</div>
-                                    <div className="text-sm text-slate-500">Bulk order discount</div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm font-medium text-emerald-600">25% Off</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">$100.00</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">Nov 30, 2024</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">45 / 100</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
-                                        Active
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <button className="p-2 hover:bg-slate-100 rounded-lg">
-                                        <Edit className="w-5 h-5 text-slate-600" />
-                                    </button>
-                                </td>
-                            </tr>
+                                            <td className="px-6 py-4">
+                                                <span className="inline-block px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
+                                                    {coupon.isActive ? "Active" : "Disabled"}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <button className="p-2 hover:bg-slate-100 rounded-lg">
+                                                    <Edit className="w-5 h-5 text-slate-600" />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            }
 
-                            <tr className="hover:bg-slate-50">
-                                <td className="px-6 py-4">
-                                    <div className="font-mono font-medium text-slate-900">FREESHIP</div>
-                                    <div className="text-sm text-slate-500">Free delivery</div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm font-medium text-emerald-600">$5 Off</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">$25.00</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">Dec 25, 2024</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">167 / 300</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
-                                        Active
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <button className="p-2 hover:bg-slate-100 rounded-lg">
-                                        <Edit className="w-5 h-5 text-slate-600" />
-                                    </button>
-                                </td>
-                            </tr>
 
-                            <tr className="hover:bg-slate-50">
-                                <td className="px-6 py-4">
-                                    <div className="font-mono font-medium text-slate-900">SUMMER30</div>
-                                    <div className="text-sm text-slate-500">Summer sale</div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm font-medium text-slate-400">30% Off</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-400">$60.00</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-red-600">Aug 31, 2024</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-400">500 / 500</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-slate-100 text-slate-600 rounded-full">
-                                        Expired
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <button className="p-2 hover:bg-slate-100 rounded-lg">
-                                        <Edit className="w-5 h-5 text-slate-600" />
-                                    </button>
-                                </td>
-                            </tr>
 
-                            <tr className="hover:bg-slate-50">
-                                <td className="px-6 py-4">
-                                    <div className="font-mono font-medium text-slate-900">VIP10</div>
-                                    <div className="text-sm text-slate-500">VIP members only</div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm font-medium text-emerald-600">10% Off</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">$20.00</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">Mar 31, 2025</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">78 / Unlimited</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
-                                        Active
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <button className="p-2 hover:bg-slate-100 rounded-lg">
-                                        <Edit className="w-5 h-5 text-slate-600" />
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr className="hover:bg-slate-50">
-                                <td className="px-6 py-4">
-                                    <div className="font-mono font-medium text-slate-900">LOYAL50</div>
-                                    <div className="text-sm text-slate-500">Loyalty reward</div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm font-medium text-emerald-600">$50 Off</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">$200.00</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">Feb 28, 2025</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">12 / 50</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
-                                        Active
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <button className="p-2 hover:bg-slate-100 rounded-lg">
-                                        <Edit className="w-5 h-5 text-slate-600" />
-                                    </button>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>

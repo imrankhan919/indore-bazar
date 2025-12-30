@@ -1,7 +1,45 @@
 import { Search, Filter, Eye } from 'lucide-react';
 import ShopOwnerLayout from '../../components/shop/ShopOwnerLayout';
+import { useDispatch, useSelector } from 'react-redux';
+import { getMyShopOrders } from '../../features/shop/shopSlice';
+import { toast } from 'react-toastify';
+import { useEffect } from 'react';
+import LoadingScreen from '../../components/LoadingScreen';
 
 function ShopOrders() {
+
+
+    const { user } = useSelector(state => state.auth)
+    const { shopLoading, shopSuccess, shopError, shopErrorMessage, shopOrders } = useSelector(state => state.shop)
+
+    const dispatch = useDispatch()
+
+
+
+
+
+
+    useEffect(() => {
+
+        dispatch(getMyShopOrders())
+
+
+        if (shopError && shopErrorMessage) {
+            toast.error(shopError, { position: "top-center" })
+        }
+
+    }, [shopError, shopErrorMessage])
+
+
+    if (shopLoading) {
+        return <LoadingScreen loadingMessage='Shop Profile Loading...' />
+    }
+
+
+
+
+
+
     return (
         <ShopOwnerLayout activePage="Orders">
             <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -39,269 +77,44 @@ function ShopOrders() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-200">
-                            <tr className="hover:bg-slate-50">
-                                <td className="px-6 py-4">
-                                    <span className="font-medium text-slate-900">#ORD-24857</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div>
-                                        <div className="font-medium text-slate-900">Sarah Johnson</div>
-                                        <div className="text-sm text-slate-500">sarah.j@email.com</div>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">5 items</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="font-medium text-slate-900">$127.50</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
-                                        Paid
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-amber-100 text-amber-700 rounded-full">
-                                        Preparing
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <button className="p-2 hover:bg-slate-100 rounded-lg">
-                                        <Eye className="w-5 h-5 text-slate-600" />
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr className="hover:bg-slate-50">
-                                <td className="px-6 py-4">
-                                    <span className="font-medium text-slate-900">#ORD-24856</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div>
-                                        <div className="font-medium text-slate-900">Mike Williams</div>
-                                        <div className="text-sm text-slate-500">mike.w@email.com</div>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">3 items</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="font-medium text-slate-900">$89.20</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
-                                        Paid
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-sky-100 text-sky-700 rounded-full">
-                                        Out for Delivery
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <button className="p-2 hover:bg-slate-100 rounded-lg">
-                                        <Eye className="w-5 h-5 text-slate-600" />
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr className="hover:bg-slate-50">
-                                <td className="px-6 py-4">
-                                    <span className="font-medium text-slate-900">#ORD-24855</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div>
-                                        <div className="font-medium text-slate-900">Emma Davis</div>
-                                        <div className="text-sm text-slate-500">emma.d@email.com</div>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">7 items</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="font-medium text-slate-900">$56.80</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
-                                        Paid
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
-                                        Delivered
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <button className="p-2 hover:bg-slate-100 rounded-lg">
-                                        <Eye className="w-5 h-5 text-slate-600" />
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr className="hover:bg-slate-50">
-                                <td className="px-6 py-4">
-                                    <span className="font-medium text-slate-900">#ORD-24854</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div>
-                                        <div className="font-medium text-slate-900">James Brown</div>
-                                        <div className="text-sm text-slate-500">james.b@email.com</div>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">12 items</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="font-medium text-slate-900">$203.45</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
-                                        Paid
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-slate-100 text-slate-700 rounded-full">
-                                        Placed
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <button className="p-2 hover:bg-slate-100 rounded-lg">
-                                        <Eye className="w-5 h-5 text-slate-600" />
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr className="hover:bg-slate-50">
-                                <td className="px-6 py-4">
-                                    <span className="font-medium text-slate-900">#ORD-24853</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div>
-                                        <div className="font-medium text-slate-900">Lisa Anderson</div>
-                                        <div className="text-sm text-slate-500">lisa.a@email.com</div>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">8 items</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="font-medium text-slate-900">$142.90</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
-                                        Paid
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
-                                        Delivered
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <button className="p-2 hover:bg-slate-100 rounded-lg">
-                                        <Eye className="w-5 h-5 text-slate-600" />
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr className="hover:bg-slate-50">
-                                <td className="px-6 py-4">
-                                    <span className="font-medium text-slate-900">#ORD-24852</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div>
-                                        <div className="font-medium text-slate-900">David Miller</div>
-                                        <div className="text-sm text-slate-500">david.m@email.com</div>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">4 items</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="font-medium text-slate-900">$78.35</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-amber-100 text-amber-700 rounded-full">
-                                        Pending
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-slate-100 text-slate-700 rounded-full">
-                                        Placed
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <button className="p-2 hover:bg-slate-100 rounded-lg">
-                                        <Eye className="w-5 h-5 text-slate-600" />
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr className="hover:bg-slate-50">
-                                <td className="px-6 py-4">
-                                    <span className="font-medium text-slate-900">#ORD-24851</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div>
-                                        <div className="font-medium text-slate-900">Rachel Green</div>
-                                        <div className="text-sm text-slate-500">rachel.g@email.com</div>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">6 items</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="font-medium text-slate-900">$95.60</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
-                                        Paid
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-amber-100 text-amber-700 rounded-full">
-                                        Preparing
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <button className="p-2 hover:bg-slate-100 rounded-lg">
-                                        <Eye className="w-5 h-5 text-slate-600" />
-                                    </button>
-                                </td>
-                            </tr>
-
-                            <tr className="hover:bg-slate-50">
-                                <td className="px-6 py-4">
-                                    <span className="font-medium text-slate-900">#ORD-24850</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <div>
-                                        <div className="font-medium text-slate-900">Tom Wilson</div>
-                                        <div className="text-sm text-slate-500">tom.w@email.com</div>
-                                    </div>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="text-sm text-slate-700">9 items</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="font-medium text-slate-900">$167.25</span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
-                                        Paid
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <span className="inline-block px-3 py-1 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
-                                        Delivered
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4">
-                                    <button className="p-2 hover:bg-slate-100 rounded-lg">
-                                        <Eye className="w-5 h-5 text-slate-600" />
-                                    </button>
-                                </td>
-                            </tr>
+                            {
+                                shopOrders.map(order => {
+                                    return (
+                                        <tr key={order._id} className="hover:bg-slate-50">
+                                            <td className="px-6 py-4">
+                                                <span className="font-medium text-slate-900">#ORD-{order._id[0] + order._id[1] + order._id[2] + order._id[3]}</span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div>
+                                                    <div className="font-medium text-slate-900">{order.user.name}</div>
+                                                    <div className="text-sm text-slate-500">{order.user.email}</div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className="text-sm text-slate-700">{order.products.length} items</span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className="font-medium text-slate-900">₹{order.totalBillAmount}</span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className={`inline-block px-3 py-1 text-xs font-medium ${order.status === "cancelled" ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-700'} rounded-full`}>
+                                                    {order.status === "cancelled" ? "Cancelled" : "Paid"}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className={`inline-block px-3 py-1 text-xs font-medium ${order.status === "delivered" ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'} rounded-full`}>
+                                                    {order.status}
+                                                </span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <button className="p-2 hover:bg-slate-100 rounded-lg">
+                                                    <Eye className="w-5 h-5 text-slate-600" />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            }
                         </tbody>
                     </table>
                 </div>

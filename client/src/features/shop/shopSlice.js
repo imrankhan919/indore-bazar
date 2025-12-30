@@ -148,3 +148,15 @@ export const getAllCoupons = createAsyncThunk("FETCH/SHOP/COUPONS", async (_, th
     }
 
 })
+
+// Add Product
+export const addProduct = createAsyncThunk("ADD/SHOP/PRODUCT", async (formData, thunkAPI) => {
+    let token = thunkAPI.getState().auth.user.token
+    try {
+        return await shopService.createProduct(formData, token)
+    } catch (error) {
+        const message = error.response.data.message
+        return thunkAPI.rejectWithValue(message)
+    }
+
+})
