@@ -12,6 +12,7 @@ const fetchShopDetails = async (token) => {
     }
 
     const response = await axios.get(API_URL, options)
+    localStorage.setItem("shop", JSON.stringify(response.data))
     return response.data
 
 }
@@ -57,7 +58,6 @@ const fetchAllCoupons = async (shopId, token) => {
 
 const createProduct = async (formData, token) => {
 
-    console.log(...formData)
 
     const options = {
         headers: {
@@ -66,13 +66,27 @@ const createProduct = async (formData, token) => {
     }
 
     const response = await axios.post(`${API_URL}/add-product`, formData, options)
-    console.log(response.data)
+    return response.data
+}
+
+const productUpdate = async (formData, token) => {
+
+    console.log(formData)
+
+
+    const options = {
+        headers: {
+            authorization: `Bearer ${token}`
+        }
+    }
+
+    const response = await axios.put(`${API_URL}/product/${formData._id}`, formData, options)
     return response.data
 }
 
 
 
-const shopService = { fetchShopDetails, fetchAllProducts, fetchAllOrders, fetchAllCoupons, createProduct }
+const shopService = { fetchShopDetails, fetchAllProducts, fetchAllOrders, fetchAllCoupons, createProduct, productUpdate }
 
 
 export default shopService

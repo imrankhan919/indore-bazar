@@ -1,6 +1,8 @@
 import { Home, Package, ShoppingBag, Tag, Store, Settings, Menu, Bell, User } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { getMyShopDetails } from '../../features/shop/shopSlice';
 
 function ShopOwnerLayout({ children, activePage = 'Dashboard' }) {
 

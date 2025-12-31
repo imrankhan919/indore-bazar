@@ -92,4 +92,5 @@ export const loginUser = createAsyncThunk("AUTH/LOGIN", async (formData, thunkAP
 // Logout User
 export const logoutUser = createAsyncThunk("AUTH/LOGOUT", async () => {
     localStorage.removeItem("user")
+    localStorage.removeItem("shop")
 })

@@ -1,6 +1,6 @@
 import { Plus, Search, Filter, Edit, MoreVertical, Package } from 'lucide-react';
 import ShopOwnerLayout from '../../components/shop/ShopOwnerLayout';
-import { getAllProducts } from '../../features/shop/shopSlice';
+import { getAllProducts, productEdit } from '../../features/shop/shopSlice';
 import { toast } from 'react-toastify';
 import LoadingScreen from '../../components/LoadingScreen';
 import { useEffect, useState } from 'react';
@@ -13,6 +13,7 @@ function ShopOwnerProducts() {
 
     const { shop, shopLoading, shopSuccess, shopError, shopErrorMessage, shopProducts } = useSelector(state => state.shop)
 
+
     const dispatch = useDispatch()
 
     const [showModal, setShowModal] = useState(false)
@@ -23,11 +24,15 @@ function ShopOwnerProducts() {
     }
 
 
+    const handleProductEdit = (product) => {
+        dispatch(productEdit(product))
+        handleModal()
+    }
+
 
     useEffect(() => {
 
         dispatch(getAllProducts())
-
 
         if (shopError && shopErrorMessage) {
             toast.error(shopError, { position: "top-center" })
@@ -39,13 +44,6 @@ function ShopOwnerProducts() {
     if (shopLoading) {
         return <LoadingScreen loadingMessage='Shop Profile Loading...' />
     }
-
-
-
-
-
-
-
 
 
     return (
@@ -121,7 +119,7 @@ function ShopOwnerProducts() {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <button className="p-2 hover:bg-slate-100 rounded-lg">
+                                                <button onClick={() => handleProductEdit(product)} className="p-2 hover:bg-slate-100 rounded-lg">
                                                     <Edit className="w-5 h-5 text-slate-600" />
                                                 </button>
                                             </td>

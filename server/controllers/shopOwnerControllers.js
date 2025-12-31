@@ -72,13 +72,18 @@ const addProduct = async (req, res) => {
 
     const { name, description, price, stock, category, shopId } = req.body
 
+    console.log(req.body)
+
     if (!name || !description || !price || !stock || !category) {
         res.status(409)
         throw new Error("Please Fill All Details!")
     }
 
+
+
     // Upload File To Cloudinary
     let uploadResponse = await uploadToCloudinary(req.file.path)
+
 
     // Remove File From Server
     fs.unlinkSync(req.file.path)
@@ -106,6 +111,8 @@ const addProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
 
     const updatedProduct = await Product.findByIdAndUpdate(req.params.pid, req.body, { new: true }).populate('shop')
+
+    // Todo : Image Updation Pending
 
     if (!updatedProduct) {
         res.status(409)

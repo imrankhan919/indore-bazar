@@ -1,7 +1,25 @@
 import { ShoppingBag, MapPin, Clock, Store, Leaf, Zap, TrendingUp, Menu, Apple, Coffee, Candy, Leaf as LeafIcon, UtensilsCrossed, Cake } from 'lucide-react';
 import Hero from "../assets/hero.jpg"
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { getMyShopDetails } from '../features/shop/shopSlice';
 
 function Home() {
+
+    const { user } = useSelector(state => state.auth)
+
+    const dispatch = useDispatch()
+
+
+    useEffect(() => {
+
+
+
+    }, [])
+
+
+
+
     return (
         <div className="min-h-screen bg-gray-50">
             <section className="relative bg-gradient-to-br from-emerald-50 to-teal-50">

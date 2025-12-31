@@ -1,13 +1,15 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { addProduct } from "../../features/shop/shopSlice"
+import { addProduct, getMyShopDetails, updateProduct } from "../../features/shop/shopSlice"
 
 const AddProductModal = ({ showModal, handleModal }) => {
 
     const dispatch = useDispatch()
 
 
-    const { shop } = useSelector(state => state.shop)
+    const { shop, edit } = useSelector(state => state.shop)
+
+
 
     const [formData, setFormData] = useState({
         name: "",
@@ -16,18 +18,26 @@ const AddProductModal = ({ showModal, handleModal }) => {
         category: "",
         price: "",
         stock: "",
-        shopId: ""
+        shopId: shop._id
     })
+
 
 
     const { name, description, productImage, category, price, stock, shopId } = formData
 
     const handleChange = (e) => {
 
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        })
+        if (e.target.name === 'productImage') {
+            setFormData({
+                ...formData,
+                [e.target.name]: e.target.files[0]
+            })
+        } else {
+            setFormData({
+                ...formData,
+                [e.target.name]: e.target.value
+            })
+        }
 
 
     }
@@ -46,12 +56,35 @@ const AddProductModal = ({ showModal, handleModal }) => {
         formDataToSend.append('shopId', shopId)
         formDataToSend.append('productImage', productImage)
 
-        dispatch(addProduct(formDataToSend))
+        !edit.isEdit ?
+            dispatch(addProduct(formDataToSend)) :
+            dispatch(updateProduct({ _id: edit.product._id, ...formData }))
 
+        setFormData({
+            name: "",
+            description: "",
+            productImage: "",
+            category: "",
+            price: "",
+            stock: "",
+            shopId: shop._id
+        })
+
+
+        handleModal()
     }
 
 
 
+    useEffect(() => {
+
+
+
+        if (edit.isEdit) {
+            setFormData(edit?.product)
+        }
+
+    }, [edit])
 
 
     return (
@@ -88,10 +121,10 @@ const AddProductModal = ({ showModal, handleModal }) => {
                 <form encType="multipart/form-data" onSubmit={handleSubmit} className="p-6 overflow-y-auto max-h-[calc(100vh-200px)] space-y-6">
                     {/* Basic Info Section */}
                     <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
-                        <div className="col-span-1 md:col-span-2">
+                        <div className="col-span-1 md:col-span-2 hidden">
                             <label className="block text-sm font-medium text-slate-700 mb-1.5">Shop Id : </label>
                             <input
-                                value={shop._id}
+                                value={shopId}
                                 name="shopId"
                                 onChange={handleChange}
                                 type="text"
@@ -122,8 +155,8 @@ const AddProductModal = ({ showModal, handleModal }) => {
                                     <option value="fruits">Fruits</option>
                                     <option value="dairy">Dairy & Eggs</option>
                                     <option value="bakery">Bakery</option>
-                                    <option value="meat">Cloths</option>
-                                    <option value="meat">Other</option>
+                                    <option value="cloths">Cloths</option>
+                                    <option value="other">Other</option>
                                 </select>
                                 <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
                                     <svg
@@ -218,7 +251,7 @@ const AddProductModal = ({ showModal, handleModal }) => {
                             Cancel
                         </button>
                         <button type="submit" className="px-5 py-2 text-sm font-medium text-white bg-emerald-600 border border-emerald-600 rounded-lg hover:bg-emerald-700 transition-all shadow-sm shadow-emerald-200">
-                            Add Product
+                            {edit.isEdit ? "Update Product" : "Add Product"}
                         </button>
                     </div>
                 </form>

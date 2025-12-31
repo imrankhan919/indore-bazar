@@ -1,21 +1,31 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import shopService from './shopService';
 
+let shopExists = JSON.parse(localStorage.getItem('shop'))
+
 const initialState = {
     shopLoading: false,
     shopSuccess: false,
     shopError: false,
     shopErrorMessage: "",
-    shop: {},
+    shop: shopExists || {},
     shopProducts: [],
     shopOrders: [],
-    shopCoupons: []
+    shopCoupons: [],
+    edit: { shop: {}, isEdit: false }
 }
 
 const shopSlice = createSlice({
     name: "shop",
     initialState,
-    reducers: {},
+    reducers: {
+        productEdit: (state, action) => {
+            return {
+                ...state,
+                edit: { product: action.payload, isEdit: true }
+            }
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(getMyShopDetails.pending, (state, action) => {
@@ -86,10 +96,45 @@ const shopSlice = createSlice({
                 state.shopError = true
                 state.shopErrorMessage = action.payload
             })
+            .addCase(addProduct.pending, (state, action) => {
+                state.shopLoading = true
+                state.shopSuccess = false
+                state.shopError = false
+            })
+            .addCase(addProduct.fulfilled, (state, action) => {
+                state.shopLoading = false
+                state.shopSuccess = true
+                state.shopProducts = [action.payload, ...state.shopProducts]
+                state.shopError = false
+            })
+            .addCase(addProduct.rejected, (state, action) => {
+                state.shopLoading = true
+                state.shopSuccess = false
+                state.shopError = true
+                state.shopErrorMessage = action.payload
+            })
+            .addCase(updateProduct.pending, (state, action) => {
+                state.shopLoading = true
+                state.shopSuccess = false
+                state.shopError = false
+            })
+            .addCase(updateProduct.fulfilled, (state, action) => {
+                state.shopLoading = false
+                state.shopSuccess = true
+                state.shopProducts = state.shopProducts.map(product => product._id === action.payload._id ? action.payload : product),
+                    state.edit = { product: {}, isEdit: false }
+                state.shopError = false
+            })
+            .addCase(updateProduct.rejected, (state, action) => {
+                state.shopLoading = true
+                state.shopSuccess = false
+                state.shopError = true
+                state.shopErrorMessage = action.payload
+            })
     }
 });
 
-export const { } = shopSlice.actions
+export const { productEdit } = shopSlice.actions
 
 export default shopSlice.reducer
 
@@ -110,7 +155,7 @@ export const getMyShopDetails = createAsyncThunk("FETCH/SHOP/DETAILS", async (_,
 // Fetch All Products
 export const getAllProducts = createAsyncThunk("FETCH/PRODUCTS", async (_, thunkAPI) => {
 
-    let shopId = thunkAPI.getState().shop.shop._id
+    let shopId = JSON.parse(localStorage.getItem('shop'))._id
 
     try {
         return await shopService.fetchAllProducts(shopId)
@@ -122,7 +167,7 @@ export const getAllProducts = createAsyncThunk("FETCH/PRODUCTS", async (_, thunk
 })
 
 
-// Fetch My Shop Details
+// Fetch My Shop Orders
 export const getMyShopOrders = createAsyncThunk("FETCH/SHOP/ORDERS", async (_, thunkAPI) => {
     let token = thunkAPI.getState().auth.user.token
     try {
@@ -154,6 +199,19 @@ export const addProduct = createAsyncThunk("ADD/SHOP/PRODUCT", async (formData, 
     let token = thunkAPI.getState().auth.user.token
     try {
         return await shopService.createProduct(formData, token)
+    } catch (error) {
+        const message = error.response.data.message
+        return thunkAPI.rejectWithValue(message)
+    }
+
+})
+
+
+// Update Product
+export const updateProduct = createAsyncThunk("UPDATE/SHOP/PRODUCT", async (formData, thunkAPI) => {
+    let token = thunkAPI.getState().auth.user.token
+    try {
+        return await shopService.productUpdate(formData, token)
     } catch (error) {
         const message = error.response.data.message
         return thunkAPI.rejectWithValue(message)
