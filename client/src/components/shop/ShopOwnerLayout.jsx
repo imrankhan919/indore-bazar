@@ -79,7 +79,7 @@ function ShopOwnerLayout({ children, activePage = 'Dashboard' }) {
                                         <User className="w-6 h-6 text-emerald-600" />
                                     </div>
                                     <div className="hidden md:block">
-                                        <div className="text-sm font-medium text-slate-900">{user.name}</div>
+                                        <div className="text-sm font-medium text-slate-900">{user?.name}</div>
                                         <div className="text-xs text-slate-500">Shop Owner</div>
                                     </div>
                                 </div>

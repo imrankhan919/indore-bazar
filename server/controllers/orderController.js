@@ -50,8 +50,8 @@ const createOrder = async (req, res) => {
 
 
     // Find Cart
-    const cart = await Cart.findOne({ user: userId })
-    await cart.populate("products.product")
+    const cart = await Cart.findOne({ user: userId }).populate("products.product")
+
 
     if (!cart) {
         res.status(404)

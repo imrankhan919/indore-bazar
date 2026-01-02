@@ -3,8 +3,9 @@ import ShopOwnerLayout from '../../components/shop/ShopOwnerLayout';
 import { useDispatch, useSelector } from 'react-redux';
 import { getMyShopOrders } from '../../features/shop/shopSlice';
 import { toast } from 'react-toastify';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import LoadingScreen from '../../components/LoadingScreen';
+import OrderDetailsModal from '../../components/shop/OrderDetailsModal';
 
 function ShopOrders() {
 
@@ -14,9 +15,15 @@ function ShopOrders() {
 
     const dispatch = useDispatch()
 
+    const [showOrderDetails, setShowOrderDetails] = useState(false)
+    const [orderDetails, setOrderDetails] = useState(null)
 
 
+    const handleOrderDetails = (orderDetails) => {
+        setOrderDetails(orderDetails)
+        setShowOrderDetails(showOrderDetails ? false : true)
 
+    }
 
 
     useEffect(() => {
@@ -42,6 +49,11 @@ function ShopOrders() {
 
     return (
         <ShopOwnerLayout activePage="Orders">
+
+            {
+                showOrderDetails && <OrderDetailsModal handleOrderDetails={handleOrderDetails} orderDetails={orderDetails} />
+            }
+
             <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="flex-1 max-w-md">
                     <div className="relative">
@@ -107,7 +119,7 @@ function ShopOrders() {
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <button className="p-2 hover:bg-slate-100 rounded-lg">
+                                                <button onClick={() => handleOrderDetails(order)} className="p-2 hover:bg-slate-100 rounded-lg">
                                                     <Eye className="w-5 h-5 text-slate-600" />
                                                 </button>
                                             </td>
