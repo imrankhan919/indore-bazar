@@ -1,6 +1,20 @@
 import { X, Package, CreditCard, MapPin, Phone, Mail, User } from 'lucide-react';
+import { useDispatch, useSelector } from "react-redux"
+import { updateOrder } from '../../features/shop/shopSlice';
 
 function OrderDetailsModal({ handleOrderDetails, orderDetails }) {
+
+
+
+    const dispatch = useDispatch()
+
+    const handleOrderUpdate = (orderDetails) => {
+
+        dispatch(updateOrder(orderDetails))
+        handleOrderDetails(null)
+    }
+
+
     const orderData = {
         orderId: orderDetails._id,
         orderDate: new Date(orderDetails.createdAt).toLocaleDateString('en-IN'),
@@ -158,10 +172,10 @@ function OrderDetailsModal({ handleOrderDetails, orderDetails }) {
 
                             {orderData.status === 'placed' && (
                                 <div className="flex flex-col sm:flex-row gap-3 mt-4">
-                                    <button className="flex-1 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md">
+                                    <button onClick={() => handleOrderUpdate({ id: orderData.orderId, status: "dispatched" })} className="flex-1 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md">
                                         Dispatch Order
                                     </button>
-                                    <button className="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md">
+                                    <button onClick={() => handleOrderUpdate({ id: orderData.orderId, status: "cancelled" })} className="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md">
                                         Cancel Order
                                     </button>
                                 </div>
@@ -174,7 +188,7 @@ function OrderDetailsModal({ handleOrderDetails, orderDetails }) {
                                         <p className="text-sm font-medium text-blue-900">Order already dispatched</p>
                                     </div>
                                     <button
-
+                                        onClick={() => handleOrderUpdate({ id: orderData.orderId, status: "delivered" })}
                                         className="w-full px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg cursor-pointer"
                                     >
                                         Mark As Delievered

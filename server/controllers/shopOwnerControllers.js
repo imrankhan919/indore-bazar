@@ -148,7 +148,7 @@ const createCoupon = async (req, res) => {
 
     await coupon.save()
 
-    await coupon.populate("shop")
+    // await coupon.populate("shop")
 
 
     if (!coupon) {

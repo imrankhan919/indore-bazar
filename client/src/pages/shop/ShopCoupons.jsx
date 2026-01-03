@@ -4,19 +4,21 @@ import LoadingScreen from '../../components/LoadingScreen';
 import { toast } from 'react-toastify';
 import { getAllCoupons } from '../../features/shop/shopSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import AddCouponModal from '../../components/shop/AddCouponModal';
 
 function ShopCoupons() {
 
-
+    const [showModal, setShowModal] = useState(false)
 
 
     const { shopLoading, shopSuccess, shopError, shopErrorMessage, shopCoupons } = useSelector(state => state.shop)
 
     const dispatch = useDispatch()
 
-
-
+    const handleModal = () => {
+        setShowModal(showModal ? false : true)
+    }
 
 
 
@@ -46,6 +48,9 @@ function ShopCoupons() {
 
     return (
         <ShopOwnerLayout activePage="Coupons">
+            {
+                showModal && <AddCouponModal showModal={showModal} handleModal={handleModal} />
+            }
             <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div className="flex-1 max-w-md">
                     <div className="relative">
@@ -64,7 +69,7 @@ function ShopCoupons() {
                         <span className="text-sm font-medium text-slate-700">Filter</span>
                     </button>
 
-                    <button className="flex items-center px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600">
+                    <button onClick={handleModal} className="flex items-center px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600">
                         <Plus className="w-5 h-5 mr-2" />
                         <span className="text-sm font-medium">Create Coupon</span>
                     </button>

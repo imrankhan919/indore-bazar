@@ -5,6 +5,7 @@ let userExist = JSON.parse(localStorage.getItem('user'))
 
 const initialState = {
     user: userExist || null,
+    orders: [],
     isLoading: false,
     isSuccess: false,
     isError: false,
@@ -57,7 +58,24 @@ const authSlice = createSlice({
                 state.message = ""
                 state.isSuccess = false
                 state.user = null
+            }).addCase(getMyOrders.pending, (state, action) => {
+                state.isLoading = true
+                state.isError = false
+                state.isSuccess = false
             })
+            .addCase(getMyOrders.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isError = false
+                state.isSuccess = true
+                state.orders = action.payload
+            })
+            .addCase(getMyOrders.rejected, (state, action) => {
+                state.isLoading = true
+                state.isError = true
+                state.message = action.payload
+                state.isSuccess = false
+            })
+
     }
 });
 
@@ -93,4 +111,20 @@ export const loginUser = createAsyncThunk("AUTH/LOGIN", async (formData, thunkAP
 export const logoutUser = createAsyncThunk("AUTH/LOGOUT", async () => {
     localStorage.removeItem("user")
     localStorage.removeItem("shop")
+})
+
+
+// GET My Orders
+export const getMyOrders = createAsyncThunk("AUTH/FETCH/ORDERS", async (_, thunkAPI) => {
+
+    let token = thunkAPI.getState().auth.user.token
+
+    try {
+        return await authService.fetchMyOrders(token)
+    } catch (error) {
+        const message = error.response.data.message
+        return thunkAPI.rejectWithValue(message)
+    }
+
+
 })

@@ -40,7 +40,7 @@ const shopSlice = createSlice({
                 state.shopError = false
             })
             .addCase(getMyShopDetails.rejected, (state, action) => {
-                state.shopLoading = true
+                state.shopLoading = false
                 state.shopSuccess = false
                 state.shopError = true
                 state.shopErrorMessage = action.payload
@@ -57,7 +57,7 @@ const shopSlice = createSlice({
                 state.shopError = false
             })
             .addCase(getAllProducts.rejected, (state, action) => {
-                state.shopLoading = true
+                state.shopLoading = false
                 state.shopSuccess = false
                 state.shopError = true
                 state.shopErrorMessage = action.payload
@@ -74,7 +74,7 @@ const shopSlice = createSlice({
                 state.shopError = false
             })
             .addCase(getMyShopOrders.rejected, (state, action) => {
-                state.shopLoading = true
+                state.shopLoading = false
                 state.shopSuccess = false
                 state.shopError = true
                 state.shopErrorMessage = action.payload
@@ -91,7 +91,7 @@ const shopSlice = createSlice({
                 state.shopError = false
             })
             .addCase(getAllCoupons.rejected, (state, action) => {
-                state.shopLoading = true
+                state.shopLoading = false
                 state.shopSuccess = false
                 state.shopError = true
                 state.shopErrorMessage = action.payload
@@ -108,7 +108,7 @@ const shopSlice = createSlice({
                 state.shopError = false
             })
             .addCase(addProduct.rejected, (state, action) => {
-                state.shopLoading = true
+                state.shopLoading = false
                 state.shopSuccess = false
                 state.shopError = true
                 state.shopErrorMessage = action.payload
@@ -126,7 +126,41 @@ const shopSlice = createSlice({
                 state.shopError = false
             })
             .addCase(updateProduct.rejected, (state, action) => {
+                state.shopLoading = false
+                state.shopSuccess = false
+                state.shopError = true
+                state.shopErrorMessage = action.payload
+            })
+            .addCase(updateOrder.pending, (state, action) => {
                 state.shopLoading = true
+                state.shopSuccess = false
+                state.shopError = false
+            })
+            .addCase(updateOrder.fulfilled, (state, action) => {
+                state.shopLoading = false
+                state.shopSuccess = true
+                state.shopOrders = state.shopOrders.map(order => order._id === action.payload._id ? action.payload : order),
+                    state.shopError = false
+            })
+            .addCase(updateOrder.rejected, (state, action) => {
+                state.shopLoading = false
+                state.shopSuccess = false
+                state.shopError = true
+                state.shopErrorMessage = action.payload
+            })
+            .addCase(createCoupon.pending, (state, action) => {
+                state.shopLoading = true
+                state.shopSuccess = false
+                state.shopError = false
+            })
+            .addCase(createCoupon.fulfilled, (state, action) => {
+                state.shopLoading = false
+                state.shopSuccess = true
+                state.shopCoupons = [action.payload, ...state.shopCoupons]
+                state.shopError = false
+            })
+            .addCase(createCoupon.rejected, (state, action) => {
+                state.shopLoading = false
                 state.shopSuccess = false
                 state.shopError = true
                 state.shopErrorMessage = action.payload
@@ -212,6 +246,36 @@ export const updateProduct = createAsyncThunk("UPDATE/SHOP/PRODUCT", async (form
     let token = thunkAPI.getState().auth.user.token
     try {
         return await shopService.productUpdate(formData, token)
+    } catch (error) {
+        const message = error.response.data.message
+        return thunkAPI.rejectWithValue(message)
+    }
+
+})
+
+
+// Update Order 
+export const updateOrder = createAsyncThunk("UPDATE/SHOP/ORDER", async (orderDetails, thunkAPI) => {
+
+    let token = thunkAPI.getState().auth.user.token
+
+    try {
+        return await shopService.orderUpdate(token, orderDetails)
+    } catch (error) {
+        const message = error.response.data.message
+        return thunkAPI.rejectWithValue(message)
+    }
+
+})
+
+
+// Add Coupon 
+export const createCoupon = createAsyncThunk("ADD/SHOP/COUPON", async (couponDetails, thunkAPI) => {
+
+    let token = thunkAPI.getState().auth.user.token
+
+    try {
+        return await shopService.addCoupon(token, couponDetails)
     } catch (error) {
         const message = error.response.data.message
         return thunkAPI.rejectWithValue(message)

@@ -1,4 +1,4 @@
-import { Home, Package, ShoppingBag, Tag, Store, Settings, Menu, Bell, User } from 'lucide-react';
+import { Home, Package, ShoppingBag, Tag, Store, Settings, Menu, Bell, User, ArrowBigLeft } from 'lucide-react';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -46,9 +46,9 @@ function ShopOwnerLayout({ children, activePage = 'Dashboard' }) {
                             <span className="ml-3">Shop Profile</span>
                         </Link>
 
-                        <Link to="/shop/settings" className={`flex items-center px-4 py-3 rounded-lg transition ${activePage === 'Settings' ? 'bg-emerald-500 text-white' : 'text-slate-300 hover:bg-slate-800'}`}>
-                            <Settings className="w-5 h-5" />
-                            <span className="ml-3">Settings</span>
+                        <Link to="/" className={`flex items-center px-4 py-3 rounded-lg transition ${activePage === 'Settings' ? 'bg-emerald-500 text-white' : 'text-slate-300 hover:bg-slate-800'}`}>
+                            <ArrowBigLeft className="w-5 h-5" />
+                            <span className="ml-3">Back</span>
                         </Link>
                     </nav>
                 </aside>

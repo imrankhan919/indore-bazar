@@ -16,6 +16,7 @@ import ShopOwnerProducts from './pages/shop/ShopOwnerProducts'
 import ShopOrders from './pages/shop/ShopOrders'
 import ShopCoupons from './pages/shop/ShopCoupons'
 import ShopProfile from './pages/shop/ShopProfile'
+import ProfilePage from './pages/Profile'
 
 const App = () => {
   return (
@@ -38,6 +39,8 @@ const App = () => {
         <Route path='/shop/orders' element={<ShopOrders />} />
         <Route path='/shop/coupons' element={<ShopCoupons />} />
         <Route path='/shop/profile' element={<ShopProfile />} />
+        {/* Auth Routes */}
+        <Route path="/auth/profile" element={<ProfilePage />} />
       </Routes>
       <ToastContainer />
     </BrowserRouter>
