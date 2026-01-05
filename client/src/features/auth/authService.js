@@ -23,15 +23,42 @@ const fetchMyOrders = async (token) => {
     }
 
     const response = await axios.get("/api/orders", options)
-    console.log(response.data)
     return response.data
 
 
 }
 
 
+const orderCancel = async (token, orderDetails) => {
 
-const authService = { register, login, fetchMyOrders }
+    let options = {
+        headers: {
+            authorization: `Bearer ${token}`
+        }
+    }
+
+    const response = await axios.put("/api/orders/" + orderDetails.id, { status: "cancelled" }, options)
+    return response.data
+
+
+}
+
+
+const requestShopApproval = async (token, shopDetails) => {
+    let options = {
+        headers: {
+            authorization: `Bearer ${token}`
+        }
+    }
+
+    const response = await axios.post("/api/shop-owner/create-shop", shopDetails, options)
+    return response.data
+
+}
+
+
+
+const authService = { register, login, fetchMyOrders, orderCancel, requestShopApproval }
 
 
 export default authService

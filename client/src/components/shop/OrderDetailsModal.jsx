@@ -1,34 +1,42 @@
 import { X, Package, CreditCard, MapPin, Phone, Mail, User } from 'lucide-react';
 import { useDispatch, useSelector } from "react-redux"
 import { updateOrder } from '../../features/shop/shopSlice';
+import LoadingScreen from '../LoadingScreen';
+import { cancelOrder } from '../../features/auth/authSlice';
 
 function OrderDetailsModal({ handleOrderDetails, orderDetails }) {
 
+    const { user } = useSelector(state => state.auth)
 
 
     const dispatch = useDispatch()
 
     const handleOrderUpdate = (orderDetails) => {
 
-        dispatch(updateOrder(orderDetails))
+        if (user.isShopOwner) {
+            dispatch(updateOrder(orderDetails))
+        } else {
+            dispatch(cancelOrder(orderDetails))
+        }
+
         handleOrderDetails(null)
     }
 
 
     const orderData = {
-        orderId: orderDetails._id,
-        orderDate: new Date(orderDetails.createdAt).toLocaleDateString('en-IN'),
-        status: orderDetails.status,
-        paymentStatus: orderDetails.status === "cancelled" ? "Cancelled" : 'paid',
+        orderId: orderDetails?._id,
+        orderDate: new Date(orderDetails?.createdAt).toLocaleDateString('en-IN'),
+        status: orderDetails?.status,
+        paymentStatus: orderDetails?.status === "cancelled" ? "Cancelled" : 'paid',
         customer: {
-            name: orderDetails.user.name,
-            email: orderDetails.user.email,
-            phone: orderDetails.user.phone,
-            address: orderDetails.user.address
+            name: orderDetails?.user.name,
+            email: orderDetails?.user.email,
+            phone: orderDetails?.user.phone,
+            address: orderDetails?.user.address
         },
-        items: orderDetails.products,
-        subtotal: orderDetails.products.reduce((acc, product) => acc + product.purchasedPrice * product.qty, 0),
-        discount: orderDetails.products.reduce((acc, product) => acc + product.purchasedPrice * product.qty, 0) - orderDetails.totalBillAmount
+        items: orderDetails?.products,
+        subtotal: orderDetails?.products.reduce((acc, product) => acc + product.purchasedPrice * product.qty, 0),
+        discount: orderDetails?.products.reduce((acc, product) => acc + product.purchasedPrice * product.qty, 0) - orderDetails?.totalBillAmount
     };
 
     const total = orderData.subtotal + orderData.deliveryCharges;
@@ -48,6 +56,14 @@ function OrderDetailsModal({ handleOrderDetails, orderDetails }) {
             ? 'bg-emerald-100 text-emerald-700 border-emerald-200'
             : 'bg-red-100 text-red-700 border-red-200';
     };
+
+
+    if (!orderDetails) {
+        return (
+            <LoadingScreen />
+        )
+    }
+
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm animate-in fade-in duration-200">
@@ -117,7 +133,7 @@ function OrderDetailsModal({ handleOrderDetails, orderDetails }) {
                             <h3 className="text-lg font-semibold text-gray-900">Order Items</h3>
                         </div>
                         <div className="divide-y divide-gray-100">
-                            {orderData.items.map((item) => (
+                            {orderData?.items.map((item) => (
                                 <div key={item.product._id} className="px-6 py-4 hover:bg-gray-50 transition-colors duration-150">
                                     <div className="flex items-center justify-between gap-4">
                                         <div className="flex-1 min-w-0">
@@ -172,29 +188,33 @@ function OrderDetailsModal({ handleOrderDetails, orderDetails }) {
 
                             {orderData.status === 'placed' && (
                                 <div className="flex flex-col sm:flex-row gap-3 mt-4">
-                                    <button onClick={() => handleOrderUpdate({ id: orderData.orderId, status: "dispatched" })} className="flex-1 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md">
-                                        Dispatch Order
-                                    </button>
+                                    {
+                                        user.isShopOwner && <button onClick={() => handleOrderUpdate({ id: orderData.orderId, status: "dispatched" })} className="flex-1 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md">
+                                            Dispatch Order
+                                        </button>
+                                    }
                                     <button onClick={() => handleOrderUpdate({ id: orderData.orderId, status: "cancelled" })} className="flex-1 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md">
                                         Cancel Order
                                     </button>
                                 </div>
                             )}
 
-                            {orderData.status === 'dispatched' && (
-                                <div className="mt-4">
-                                    <div className="flex items-center gap-2 p-4 bg-blue-50 border border-blue-200 rounded-lg mb-3">
-                                        <span className="text-2xl">🚚</span>
-                                        <p className="text-sm font-medium text-blue-900">Order already dispatched</p>
+                            {
+                                user.isShopOwner && orderData.status === 'dispatched' && (
+                                    <div className="mt-4">
+                                        <div className="flex items-center gap-2 p-4 bg-blue-50 border border-blue-200 rounded-lg mb-3">
+                                            <span className="text-2xl">🚚</span>
+                                            <p className="text-sm font-medium text-blue-900">Order already dispatched</p>
+                                        </div>
+                                        <button
+                                            onClick={() => handleOrderUpdate({ id: orderData.orderId, status: "delivered" })}
+                                            className="w-full px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg cursor-pointer"
+                                        >
+                                            Mark As Delievered
+                                        </button>
                                     </div>
-                                    <button
-                                        onClick={() => handleOrderUpdate({ id: orderData.orderId, status: "delivered" })}
-                                        className="w-full px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg cursor-pointer"
-                                    >
-                                        Mark As Delievered
-                                    </button>
-                                </div>
-                            )}
+                                )
+                            }
 
                             {orderData.status === 'cancelled' && (
                                 <div className="mt-4">

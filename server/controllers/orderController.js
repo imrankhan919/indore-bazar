@@ -6,7 +6,7 @@ const getMyOrders = async (req, res) => {
 
     const userId = req.user._id
 
-    const myOrders = await Order.find({ user: userId })
+    const myOrders = await Order.find({ user: userId }).populate('user').populate('products.product')
 
     if (!myOrders) {
         res.status(404)

@@ -6,6 +6,7 @@ let userExist = JSON.parse(localStorage.getItem('user'))
 const initialState = {
     user: userExist || null,
     orders: [],
+    shopStatus: false,
     isLoading: false,
     isSuccess: false,
     isError: false,
@@ -47,7 +48,7 @@ const authSlice = createSlice({
                 state.user = action.payload
             })
             .addCase(loginUser.rejected, (state, action) => {
-                state.isLoading = true
+                state.isLoading = false
                 state.isError = true
                 state.message = action.payload
                 state.isSuccess = false
@@ -70,7 +71,39 @@ const authSlice = createSlice({
                 state.orders = action.payload
             })
             .addCase(getMyOrders.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+                state.isSuccess = false
+            }).addCase(cancelOrder.pending, (state, action) => {
                 state.isLoading = true
+                state.isError = false
+                state.isSuccess = false
+            })
+            .addCase(cancelOrder.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isError = false
+                state.isSuccess = true
+                state.orders = state.orders.map(order => order._id === action.payload._id ? action.payload : order)
+            })
+            .addCase(cancelOrder.rejected, (state, action) => {
+                state.isLoading = false
+                state.isError = true
+                state.message = action.payload
+                state.isSuccess = false
+            }).addCase(becomeShopOwner.pending, (state, action) => {
+                state.isLoading = true
+                state.isError = false
+                state.isSuccess = false
+            })
+            .addCase(becomeShopOwner.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isError = false
+                state.isSuccess = true
+                state.status = true
+            })
+            .addCase(becomeShopOwner.rejected, (state, action) => {
+                state.isLoading = false
                 state.isError = true
                 state.message = action.payload
                 state.isSuccess = false
@@ -121,6 +154,38 @@ export const getMyOrders = createAsyncThunk("AUTH/FETCH/ORDERS", async (_, thunk
 
     try {
         return await authService.fetchMyOrders(token)
+    } catch (error) {
+        const message = error.response.data.message
+        return thunkAPI.rejectWithValue(message)
+    }
+
+
+})
+
+
+// CANCEL My Order
+export const cancelOrder = createAsyncThunk("AUTH/CANCEL/ORDER", async (orderDetails, thunkAPI) => {
+
+    let token = thunkAPI.getState().auth.user.token
+
+    try {
+        return await authService.orderCancel(token, orderDetails)
+    } catch (error) {
+        const message = error.response.data.message
+        return thunkAPI.rejectWithValue(message)
+    }
+
+
+})
+
+
+// Become Shop Owner
+export const becomeShopOwner = createAsyncThunk("AUTH/SHOP/REQUEST", async (shopDetails, thunkAPI) => {
+
+    let token = thunkAPI.getState().auth.user.token
+
+    try {
+        return await authService.requestShopApproval(token, shopDetails)
     } catch (error) {
         const message = error.response.data.message
         return thunkAPI.rejectWithValue(message)
