@@ -17,6 +17,8 @@ import ShopOrders from './pages/shop/ShopOrders'
 import ShopCoupons from './pages/shop/ShopCoupons'
 import ShopProfile from './pages/shop/ShopProfile'
 import ProfilePage from './pages/Profile'
+import ProductDetails from './pages/SingleProductPage'
+import ProductsPage from './pages/AllProducts'
 
 const App = () => {
   return (
@@ -26,6 +28,8 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path='/products' element={<ProductsPage />} />
+        <Route path='/products/:pid' element={<ProductDetails />} />
         {/* Admin Routes */}
         <Route path='/admin' element={<PriveateAdminComponent />} >
           <Route path="dashboard" element={<AdminDashboard />} />

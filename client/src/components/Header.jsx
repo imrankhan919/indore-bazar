@@ -1,5 +1,5 @@
 import { Leaf } from 'lucide-react'
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Link, Links, useLocation, useNavigate } from "react-router-dom"
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutUser } from '../features/auth/authSlice'
@@ -25,14 +25,14 @@ const Header = () => {
         <header className={location.pathname.includes("/admin") || location.pathname.includes("/shop") ? "hidden" : "sticky top-0 z-50 bg-white border-b border-gray-200"}>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
-                    <div className="flex items-center gap-2">
+                    <Link to={"/"} className="flex items-center gap-2">
                         <Leaf className="w-8 h-8 text-emerald-500" />
                         <span className="text-xl font-bold text-gray-900">IndoreMart</span>
-                    </div>
+                    </Link>
                     <nav className="hidden md:flex items-center gap-6">
-                        <a className="text-gray-600 hover:text-emerald-600 transition-colors">Products</a>
-                        <a className="text-gray-600 hover:text-emerald-600 transition-colors">Shops</a>
-                        <a className="text-gray-600 hover:text-emerald-600 transition-colors">About</a>
+                        <Link to="/products" className={`text-gray-600 hover:text-emerald-600 transition-colors ${location.pathname.includes('products') ? "font-bold" : ""}`}>Products</Link>
+                        <Link to="/shops" className={`text-gray-600 hover:text-emerald-600 transition-colors ${location.pathname.includes('shops') ? "font-bold" : ""}`}>Shops</Link>
+                        <Link to={"/cart"} className={`text-gray-600 hover:text-emerald-600 transition-colors ${location.pathname.includes('cart') ? "font-bold" : ""}`}>About</Link>
                     </nav>
                     <div className="flex items-center gap-3">
                         {

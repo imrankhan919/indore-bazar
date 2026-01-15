@@ -3,22 +3,36 @@ import Hero from "../assets/hero.jpg"
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { getMyShopDetails } from '../features/shop/shopSlice';
+import { getProducts, getProductShops } from '../features/product/productSlice';
+import LoadingScreen from '../components/LoadingScreen';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 function Home() {
 
     const { user } = useSelector(state => state.auth)
+    const { products, productShops, productLoading, productSuccess, productError, productErrorMessage } = useSelector(state => state.product)
 
     const dispatch = useDispatch()
 
 
     useEffect(() => {
 
+        dispatch(getProducts())
+        dispatch(getProductShops())
+
+        if (productError && productErrorMessage) {
+            toast.error(productErrorMessage)
+        }
 
 
-    }, [])
+
+    }, [productError, productErrorMessage])
 
 
-
+    if (productLoading) {
+        return <LoadingScreen />
+    }
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -199,76 +213,30 @@ function Home() {
                         <a className="text-emerald-600 font-medium hover:text-emerald-700">View All</a>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                        <div className="bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-shadow cursor-pointer">
-                            <div className="aspect-square bg-gradient-to-br from-red-100 to-orange-100"></div>
-                            <div className="p-4">
-                                <div className="inline-block px-2 py-1 bg-emerald-50 text-emerald-700 text-xs font-medium rounded mb-2">
-                                    Fresh Mart
-                                </div>
-                                <h3 className="font-semibold text-gray-900 mb-1">Fresh Tomatoes</h3>
-                                <p className="text-sm text-gray-500 mb-2">500g</p>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-lg font-bold text-gray-900">$2.99</span>
-                                    <button className="px-3 py-1.5 bg-emerald-500 text-white text-sm font-medium rounded-lg hover:bg-emerald-600">Add</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-shadow cursor-pointer">
-                            <div className="aspect-square bg-gradient-to-br from-yellow-100 to-amber-100"></div>
-                            <div className="p-4">
-                                <div className="inline-block px-2 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded mb-2">
-                                    Daily Needs
-                                </div>
-                                <h3 className="font-semibold text-gray-900 mb-1">Fresh Bananas</h3>
-                                <p className="text-sm text-gray-500 mb-2">1 dozen</p>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-lg font-bold text-gray-900">$1.49</span>
-                                    <button className="px-3 py-1.5 bg-emerald-500 text-white text-sm font-medium rounded-lg hover:bg-emerald-600">Add</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-shadow cursor-pointer">
-                            <div className="aspect-square bg-gradient-to-br from-blue-100 to-cyan-100"></div>
-                            <div className="p-4">
-                                <div className="inline-block px-2 py-1 bg-emerald-50 text-emerald-700 text-xs font-medium rounded mb-2">
-                                    Fresh Mart
-                                </div>
-                                <h3 className="font-semibold text-gray-900 mb-1">Organic Milk</h3>
-                                <p className="text-sm text-gray-500 mb-2">1 liter</p>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-lg font-bold text-gray-900">$3.99</span>
-                                    <button className="px-3 py-1.5 bg-emerald-500 text-white text-sm font-medium rounded-lg hover:bg-emerald-600">Add</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-shadow cursor-pointer">
-                            <div className="aspect-square bg-gradient-to-br from-green-100 to-emerald-100"></div>
-                            <div className="p-4">
-                                <div className="inline-block px-2 py-1 bg-purple-50 text-purple-700 text-xs font-medium rounded mb-2">
-                                    Green Store
-                                </div>
-                                <h3 className="font-semibold text-gray-900 mb-1">Fresh Spinach</h3>
-                                <p className="text-sm text-gray-500 mb-2">250g</p>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-lg font-bold text-gray-900">$1.99</span>
-                                    <button className="px-3 py-1.5 bg-emerald-500 text-white text-sm font-medium rounded-lg hover:bg-emerald-600">Add</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="bg-white rounded-2xl overflow-hidden hover:shadow-xl transition-shadow cursor-pointer">
-                            <div className="aspect-square bg-gradient-to-br from-orange-100 to-red-100"></div>
-                            <div className="p-4">
-                                <div className="inline-block px-2 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded mb-2">
-                                    Daily Needs
-                                </div>
-                                <h3 className="font-semibold text-gray-900 mb-1">Fresh Carrots</h3>
-                                <p className="text-sm text-gray-500 mb-2">500g</p>
-                                <div className="flex items-center justify-between">
-                                    <span className="text-lg font-bold text-gray-900">$2.49</span>
-                                    <button className="px-3 py-1.5 bg-emerald-500 text-white text-sm font-medium rounded-lg hover:bg-emerald-600">Add</button>
-                                </div>
-                            </div>
-                        </div>
+                        {
+                            products.map((product, index) => {
+                                if (index >= 5) {
+                                    return
+                                } else {
+                                    return (
+                                        <div key={product._id} className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow cursor-pointer">
+                                            <div style={{ backgroundImage: `url(${product.productImage})` }} className="aspect-square bg-center bg-cover"></div>
+                                            <div className="p-4">
+                                                <div className="inline-block px-2 py-1 bg-emerald-50 text-emerald-700 text-xs font-medium rounded mb-2">
+                                                    {product.shop.name}
+                                                </div>
+                                                <h3 className="font-semibold text-gray-900 mb-1">{product.name}</h3>
+                                                <p className="text-sm text-gray-500 mb-2">{product.category}</p>
+                                                <div className="flex items-center justify-between">
+                                                    <span className="text-lg font-bold text-gray-900">₹{product.price}</span>
+                                                    <Link to={`/products/${product._id}`} className="px-3 py-1.5 bg-emerald-500 text-white text-sm font-medium rounded-lg hover:bg-emerald-600">View Product</Link>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )
+                                }
+                            })
+                        }
                     </div>
                 </div>
             </section>
@@ -280,58 +248,29 @@ function Home() {
                         <a className="text-emerald-600 font-medium hover:text-emerald-700">View All</a>
                     </div>
                     <div className="flex overflow-x-auto gap-6 pb-4 scrollbar-hide lg:grid lg:grid-cols-4">
-                        <div className="flex-shrink-0 w-72 lg:w-auto bg-gray-50 rounded-2xl p-6 hover:shadow-xl transition-shadow cursor-pointer">
-                            <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl mb-4"></div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">Fresh Mart</h3>
-                            <p className="text-sm text-gray-600 mb-4">Your daily fresh produce and groceries delivered in minutes</p>
-                            <div className="flex items-center gap-3 text-sm text-gray-500">
-                                <span className="flex items-center gap-1">
-                                    <span className="text-amber-500">★</span>
-                                    4.5
-                                </span>
-                                <span>•</span>
-                                <span>10-12 min</span>
-                            </div>
-                        </div>
-                        <div className="flex-shrink-0 w-72 lg:w-auto bg-gray-50 rounded-2xl p-6 hover:shadow-xl transition-shadow cursor-pointer">
-                            <div className="w-16 h-16 bg-gradient-to-br from-blue-400 to-cyan-500 rounded-xl mb-4"></div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">Daily Needs</h3>
-                            <p className="text-sm text-gray-600 mb-4">Everything you need for your daily essentials and more</p>
-                            <div className="flex items-center gap-3 text-sm text-gray-500">
-                                <span className="flex items-center gap-1">
-                                    <span className="text-amber-500">★</span>
-                                    4.7
-                                </span>
-                                <span>•</span>
-                                <span>8-10 min</span>
-                            </div>
-                        </div>
-                        <div className="flex-shrink-0 w-72 lg:w-auto bg-gray-50 rounded-2xl p-6 hover:shadow-xl transition-shadow cursor-pointer">
-                            <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-pink-500 rounded-xl mb-4"></div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">Green Store</h3>
-                            <p className="text-sm text-gray-600 mb-4">Premium organic and health products for mindful living</p>
-                            <div className="flex items-center gap-3 text-sm text-gray-500">
-                                <span className="flex items-center gap-1">
-                                    <span className="text-amber-500">★</span>
-                                    4.8
-                                </span>
-                                <span>•</span>
-                                <span>12-15 min</span>
-                            </div>
-                        </div>
-                        <div className="flex-shrink-0 w-72 lg:w-auto bg-gray-50 rounded-2xl p-6 hover:shadow-xl transition-shadow cursor-pointer">
-                            <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-red-500 rounded-xl mb-4"></div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">Quick Basket</h3>
-                            <p className="text-sm text-gray-600 mb-4">Fast delivery of snacks, beverages, and quick bites</p>
-                            <div className="flex items-center gap-3 text-sm text-gray-500">
-                                <span className="flex items-center gap-1">
-                                    <span className="text-amber-500">★</span>
-                                    4.6
-                                </span>
-                                <span>•</span>
-                                <span>10-12 min</span>
-                            </div>
-                        </div>
+                        {
+                            productShops.map((shop, index) => {
+                                if (index <= 4) {
+                                    return (
+                                        <div className="flex-shrink-0 w-72 lg:w-auto bg-gray-50 rounded-2xl p-6 hover:shadow-xl transition-shadow cursor-pointer">
+                                            <div className="w-16 h-16 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl mb-4 flex items-center justify-center text-white font-bold text-xl"><ShoppingBag /></div>
+                                            <h3 className="text-xl font-bold text-gray-900 mb-2">{shop.name}</h3>
+                                            <p className="text-sm text-gray-600 mb-4">{shop.description}</p>
+                                            <div className="flex items-center gap-3 text-sm text-gray-500">
+                                                <span className="flex items-center gap-1">
+                                                    <span className="text-amber-500">★</span>
+                                                    4.5
+                                                </span>
+                                                <span>•</span>
+                                                <span>10-15 min</span>
+                                            </div>
+                                        </div>
+                                    )
+                                } else {
+                                    return
+                                }
+                            })
+                        }
                     </div>
                 </div>
             </section>

@@ -26,9 +26,17 @@ function ShopDashboard() {
 
         // Api Call
         dispatch(getMyShopDetails())
-        dispatch(getAllProducts())
-        dispatch(getMyShopOrders())
-        dispatch(getAllCoupons())
+        setTimeout(() => {
+            dispatch(getAllProducts())
+        }, 100)
+        setTimeout(() => {
+            dispatch(getMyShopOrders())
+        }, 200)
+        setTimeout(() => {
+            dispatch(getAllCoupons())
+        }, 300)
+
+
     }
 
 
