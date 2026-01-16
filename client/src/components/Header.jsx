@@ -31,8 +31,8 @@ const Header = () => {
                     </Link>
                     <nav className="hidden md:flex items-center gap-6">
                         <Link to="/products" className={`text-gray-600 hover:text-emerald-600 transition-colors ${location.pathname.includes('products') ? "font-bold" : ""}`}>Products</Link>
-                        <Link to="/shops" className={`text-gray-600 hover:text-emerald-600 transition-colors ${location.pathname.includes('shops') ? "font-bold" : ""}`}>Shops</Link>
-                        <Link to={"/cart"} className={`text-gray-600 hover:text-emerald-600 transition-colors ${location.pathname.includes('cart') ? "font-bold" : ""}`}>About</Link>
+                        <Link to="/marketplace" className={`text-gray-600 hover:text-emerald-600 transition-colors ${location.pathname.includes('shops') ? "font-bold" : ""}`}>Shops</Link>
+                        <Link to={"/auth/cart"} className={`text-gray-600 hover:text-emerald-600 transition-colors ${location.pathname.includes('cart') ? "font-bold" : ""}`}>Cart</Link>
                     </nav>
                     <div className="flex items-center gap-3">
                         {

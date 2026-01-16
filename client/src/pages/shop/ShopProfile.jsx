@@ -92,7 +92,7 @@ function ShopProfile() {
                                 </label>
                                 <input
                                     type="email"
-                                    value={user.email}
+                                    value={user?.email}
                                     className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                                 />
                             </div>

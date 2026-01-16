@@ -15,7 +15,13 @@ const fetchShops = async () => {
     return response.data
 }
 
+const fetchShop = async (id) => {
 
-const productService = { fetchProducts, fetchProduct, fetchShops }
+    const response = await axios.get("/api/shops/" + id)
+    return response.data
+}
+
+
+const productService = { fetchProducts, fetchProduct, fetchShops, fetchShop }
 
 export default productService

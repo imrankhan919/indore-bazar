@@ -5,6 +5,7 @@ const initialState = {
     products: [],
     product: null,
     productShops: [],
+    productShop: null,
     productLoading: false,
     productSuccess: false,
     productError: false,
@@ -68,6 +69,23 @@ const productSlice = createSlice({
                 state.productError = true
                 state.productErrorMessage = action.payload
             })
+            .addCase(getProductShop.pending, (state, action) => {
+                state.productLoading = true
+                state.productSuccess = false
+                state.productError = false
+            })
+            .addCase(getProductShop.fulfilled, (state, action) => {
+                state.productLoading = false
+                state.productSuccess = true
+                state.productShop = action.payload
+                state.productError = false
+            })
+            .addCase(getProductShop.rejected, (state, action) => {
+                state.productLoading = false
+                state.productSuccess = false
+                state.productError = true
+                state.productErrorMessage = action.payload
+            })
     }
 });
 
@@ -100,6 +118,16 @@ export const getProduct = createAsyncThunk("FETCH/PRODUCT", async (pid, thunkAPI
 export const getProductShops = createAsyncThunk("FETCH/SHOPS", async (_, thunkAPI) => {
     try {
         return await productService.fetchShops()
+    } catch (error) {
+        const message = error.response.data.message
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+// GET SHOPS
+export const getProductShop = createAsyncThunk("FETCH/SHOP", async (id, thunkAPI) => {
+    try {
+        return await productService.fetchShop(id)
     } catch (error) {
         const message = error.response.data.message
         return thunkAPI.rejectWithValue(message)

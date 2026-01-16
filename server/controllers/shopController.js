@@ -18,7 +18,7 @@ const getShops = async (req, res) => {
 }
 
 const getShop = async (req, res) => {
-    const shop = await Shop.find()
+    const shop = await Shop.findById(req.params.sid)
 
     if (!shop) {
         res.status(404)

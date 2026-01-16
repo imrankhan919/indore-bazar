@@ -19,6 +19,10 @@ import ShopProfile from './pages/shop/ShopProfile'
 import ProfilePage from './pages/Profile'
 import ProductDetails from './pages/SingleProductPage'
 import ProductsPage from './pages/AllProducts'
+import AllShops from './pages/AllShops'
+import ShopDetailsPage from './pages/ShopProfilePage'
+import Footer from './components/Footer'
+import CartPage from './pages/CartPage'
 
 const App = () => {
   return (
@@ -30,6 +34,8 @@ const App = () => {
         <Route path="/register" element={<Register />} />
         <Route path='/products' element={<ProductsPage />} />
         <Route path='/products/:pid' element={<ProductDetails />} />
+        <Route path='/marketplace' element={<AllShops />} />
+        <Route path='/marketplace/:sid' element={<ShopDetailsPage />} />
         {/* Admin Routes */}
         <Route path='/admin' element={<PriveateAdminComponent />} >
           <Route path="dashboard" element={<AdminDashboard />} />
@@ -45,7 +51,9 @@ const App = () => {
         <Route path='/shop/profile' element={<ShopProfile />} />
         {/* Auth Routes */}
         <Route path="/auth/profile" element={<ProfilePage />} />
+        <Route path="/auth/cart" element={<CartPage />} />
       </Routes>
+      <Footer />
       <ToastContainer />
     </BrowserRouter>
   )
