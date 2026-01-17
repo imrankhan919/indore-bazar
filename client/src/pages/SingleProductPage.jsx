@@ -1,23 +1,39 @@
 import { ShoppingCart, MapPin, Phone, Clock, Link } from "lucide-react"
 import LoadingScreen from "../components/LoadingScreen"
 import { useDispatch, useSelector } from "react-redux"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { getProduct } from "../features/product/productSlice"
 import { toast } from "react-toastify"
 import { useEffect } from "react"
+import { addItemToCart, getCart } from "../features/cart/cartSlice"
 
 
 export default function ProductDetails() {
 
     const { user } = useSelector(state => state.auth)
     const { product, productLoading, productSuccess, productError, productErrorMessage } = useSelector(state => state.product)
+    const { cartItems } = useSelector(state => state.cart)
 
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const { pid } = useParams()
+
+
+    let isEligibleForCart = cartItems.products.length === 0 ? true : product?.shop?._id === cartItems?.products[0]?.product?.shop
+
+
+
+
+    const handleAddToCart = (productId) => {
+        dispatch(addItemToCart({ productId: productId, qty: 1 }))
+        navigate("/auth/cart")
+    }
+
 
     useEffect(() => {
 
         dispatch(getProduct(pid))
+        dispatch(getCart())
 
         if (productError && productErrorMessage) {
             toast.error(productErrorMessage)
@@ -82,9 +98,9 @@ export default function ProductDetails() {
                             !user ? (
                                 <h1 className="text-teal-600 text-xl font-bold">You Must Login To Purchase This Product</h1>
                             ) : (
-                                <button className="bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
+                                <button disabled={!isEligibleForCart ? true : false} onClick={() => handleAddToCart(product._id)} className="disabled:bg-gray-500 bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 flex items-center justify-center gap-2">
                                     <ShoppingCart size={20} />
-                                    Add to Cart
+                                    {isEligibleForCart ? "Add to Cart" : "Remove Other Shops Items First"}
                                 </button>
                             )
                         }

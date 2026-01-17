@@ -1,43 +1,40 @@
 import { Trash2, Plus, Minus, ShoppingCart, X } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { deleteItemFromCart, getCart, updateCart } from "../features/cart/cartSlice"
+import LoadingScreen from "../components/LoadingScreen"
+import { toast } from "react-toastify"
 
-const cartItems = [
-    {
-        _id: "1",
-        name: "Customised KeyChain",
-        price: 10,
-        quantity: 2,
-        productImage: "https://res.cloudinary.com/dqdejbfnx/image/upload/v1767185403/v19gzjdofjb7iwehf3vl.jpg",
-        shop: "Reshma Mega Store",
-    },
-    {
-        _id: "2",
-        name: "Fresh Apples",
-        price: 50,
-        quantity: 1,
-        productImage: "https://res.cloudinary.com/dqdejbfnx/image/upload/v1767185403/v19gzjdofjb7iwehf3vl.jpg",
-        shop: "Reshma Mega Store",
-    },
-    {
-        _id: "3",
-        name: "Organic Milk",
-        price: 40,
-        quantity: 3,
-        productImage: "https://res.cloudinary.com/dqdejbfnx/image/upload/v1767185403/v19gzjdofjb7iwehf3vl.jpg",
-        shop: "Reshma Mega Store",
-    },
-]
 
 export default function CartPage() {
+
+
+    const { cartItems, cartLoading, cartError, cartErrorMessage } = useSelector(state => state.cart)
+
+    const dispatch = useDispatch()
+
+
+
     const [isPaymentOpen, setIsPaymentOpen] = useState(false)
     const [couponCode, setCouponCode] = useState("")
     const [couponApplied, setCouponApplied] = useState(false)
     const [couponError, setCouponError] = useState("")
 
-    const subtotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
-    const deliveryFee = 30
-    const discount = couponApplied ? Math.floor(subtotal * 0.1) : 0
-    const total = subtotal + deliveryFee - discount
+    const subtotal = cartItems?.products?.reduce((acc, product) => product.product.price * product.qty + acc, 0)
+    const discount = 10
+    const total = subtotal - discount
+
+
+    const handleRemoveItemFromCart = (pid) => {
+        dispatch(deleteItemFromCart(pid))
+    }
+
+    const handleUpdateCart = (cartDetails) => {
+
+        dispatch(updateCart(cartDetails))
+
+    }
+
 
     const handleApplyCoupon = () => {
         setCouponError("")
@@ -61,6 +58,28 @@ export default function CartPage() {
         setCouponApplied(false)
         setCouponError("")
     }
+
+
+    useEffect(() => {
+
+        if (!cartError) {
+            dispatch(getCart())
+        }
+
+        if (cartError && cartErrorMessage) {
+            toast.error(cartErrorMessage)
+        }
+
+
+    }, [cartError, cartErrorMessage])
+
+
+    if (cartLoading) {
+        return (
+            <LoadingScreen />
+        )
+    }
+
 
     return (
         <div className="min-h-screen bg-white">
@@ -92,40 +111,40 @@ export default function CartPage() {
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-200">
-                                        {cartItems.map((item) => (
+                                        {cartItems?.products?.map((item) => (
                                             <tr key={item._id} className="hover:bg-gray-50 transition-colors">
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-4">
                                                         <img
-                                                            src={item.productImage || "/placeholder.svg"}
-                                                            alt={item.name}
+                                                            src={item.product.productImage || "/placeholder.svg"}
+                                                            alt={item.product.name}
                                                             className="w-16 h-16 object-cover rounded-lg"
                                                         />
                                                         <div className="flex-1">
-                                                            <p className="font-semibold text-gray-900">{item.name}</p>
-                                                            <p className="text-xs text-gray-500 mt-1">{item.shop}</p>
+                                                            <p className="font-semibold text-gray-900">{item.product.name}</p>
+                                                            <p className="text-xs text-gray-500 mt-1">{item.product.shop}</p>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <p className="font-semibold text-gray-900">₹{item.price}</p>
+                                                    <p className="font-semibold text-gray-900">₹{item.product.price}</p>
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3 border border-gray-300 rounded-lg w-fit px-2 py-1">
-                                                        <button className="text-gray-600 hover:text-teal-600 transition-colors">
+                                                        <button onClick={() => handleUpdateCart({ cid: cartItems._id, productId: item.product._id, qty: item.qty - 1 })} className="text-gray-600 hover:text-teal-600 transition-colors">
                                                             <Minus size={16} />
                                                         </button>
-                                                        <span className="text-sm font-semibold text-gray-900 w-6 text-center">{item.quantity}</span>
-                                                        <button className="text-gray-600 hover:text-teal-600 transition-colors">
+                                                        <span className="text-sm font-semibold text-gray-900 w-6 text-center">{item.qty}</span>
+                                                        <button onClick={() => handleUpdateCart({ cid: cartItems._id, productId: item.product._id, qty: item.qty + 1 })} className="text-gray-600 hover:text-teal-600 transition-colors">
                                                             <Plus size={16} />
                                                         </button>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <p className="font-bold text-gray-900">₹{item.price * item.quantity}</p>
+                                                    <p className="font-bold text-gray-900">₹{item.product.price * item.qty}</p>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <button className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-colors">
+                                                    <button onClick={() => handleRemoveItemFromCart(item.product._id)} className="text-red-500 hover:text-red-700 hover:bg-red-50 p-2 rounded-lg transition-colors">
                                                         <Trash2 size={18} />
                                                     </button>
                                                 </td>
@@ -192,8 +211,8 @@ export default function CartPage() {
                                     <span className="font-semibold text-gray-900">₹{subtotal}</span>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <span className="text-gray-600">Delivery Fee</span>
-                                    <span className="font-semibold text-gray-900">₹{deliveryFee}</span>
+                                    <span className="text-red-600">Discount (if any)</span>
+                                    <span className="font-semibold text-red-600"> - ₹{discount}</span>
                                 </div>
                                 {couponApplied && (
                                     <div className="flex items-center justify-between">

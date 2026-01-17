@@ -17,7 +17,7 @@ export default function ShopDetailsPage() {
     const dispatch = useDispatch()
 
 
-    const shopProducts = products?.filter((product => product.shop._id === productShop._id))
+    const shopProducts = products?.filter((product => product.shop?._id === productShop?._id))
 
     useEffect(() => {
         dispatch(getProductShop(sid))
